@@ -1,0 +1,86 @@
+C3PO,R2D2,ship
+Vader,ship
+Leia,R2D2,C3PO,ship
+Vader,ship
+Leia,ship
+C3PO,R2D2,ship
+C3PO,R2D2,ship
+Vader,Leia,ship
+Vader,ship
+C3PO,R2D2,Tatooine
+C3PO,Tatooine
+R2D2,Tatooine
+R2D2,C3PO,Tatooine
+R2D2,C3PO,Luke,Beru,Owen,Tatooine
+Beru,Luke,C3PO,R2D2,Tatooine
+Beru,Owen,Luke,Tatooine
+Luke,Tatooine
+Owen,Luke,C3PO,Tatooine
+Owen,Beru,Tatooine
+Luke,C3PO,Tatooine
+Luke,R2D2,C3PO,Tatooine
+Luke,C3PO,Tatooine
+Obi-wan,Luke,R2D2,Tatooine
+Luke,C3PO,Obi-wan,Tatooine
+C3PO,Luke,Obi-wan,R2D2,Tatooine
+Vader,Tarkin,Death Star
+Luke,Obi-wan,C3PO,R2D2,Tatooine
+Luke,Tatooine
+Vader,Leia,Death Star
+Luke,Obi-wan,R2D2,C3PO,Tatooine
+Obi-wan,Luke,Tatooine
+Obi-wan,Luke,R2D2,C3PO,Mos Eisley
+Luke,Obi-wan,Mos Eisley
+C3PO,R2D2,Mos Eisley
+Obi-wan,Chewie,Snaggletooth,Walrusman,Luke,C3PO,Mos Eisley
+C3PO,R2D2,Mos Eisley
+Han,Chewie,Obi-wan,Luke,Mos Eisley
+Han,Chewie,Mos Eisley
+Obi-wan,Luke,Mos Eisley
+Greedo,Han,Mos Eisley
+Vader,Tarkin,Death Star
+R2D2,C3PO,Mos Eisley
+Luke,Obi-wan,Chewie,Han,C3PO,R2D2,Mos Eisley
+Chewie,Han,Luke,Obi-wan,R2D2,Falcon
+Leia,Vader,Tarkin,Death Star
+Luke,Obi-wan,Han,C3PO,R2D2,Chewie,Falcon
+Tarkin,Vader,Death Star
+Han,Luke,Obi-wan,Chewie,Falcon
+Vader,Tarkin,Death Star
+Vader,Death Star
+Chewie,Han,Luke,Obi-wan,Death Star
+Leia,Luke,Han,Chewie,R2D2,C3PO,Obi-wan,Death Star
+Luke,Han,Chewie,Death Star
+Vader,Obi-wan,Death Star
+Luke,Chewie,Han,Leia,Death Star
+Vader,Tarkin,Death Star
+Luke,C3PO,Han,Leia,Chewie,Death Star
+Chewie,Han,Leia,Luke,C3PO,Death Star
+C3PO,R2D2,Death Star
+Obi-wan,Death Star
+Chewie,Han,Luke,Leia,Death Star
+C3PO,Luke,Leia,Han,Death Star
+Leia,Luke,Death Star
+Obi-wan,Death Star
+C3PO,R2D2,Death Star
+Chewie,Han,Death Star
+Obi-wan,Vader,Death Star
+Vader,Obi-wan,Luke,Han,Chewie,Leia,C3PO,R2D2,Death Star
+Leia,Luke,Han,Chewie,C3PO,R2D2,Death Star
+Tarkin,Vader,Death Star
+Han,Leia,Luke,Death Star
+Leia,Luke,Chewie,Han,C3PO,R2D2,Yavin
+R2D2,Yavin
+Vader,Tarkin,Death Star
+R2D2,Han,Chewie,C3PO,Luke,Leia,Yavin
+Vader,Tarkin,Death Star
+Luke,Han,Chewie,C3PO,Yavin
+Luke,Leia,C3PO,Yavin
+C3PO,R2D2,Luke,Biggs,Yavin
+R2D2,Obi-wan,Luke,Biggs,Han,Wedge,space
+Leia,C3PO,Yavin
+Tarkin,Death Star
+Vader,Luke,space
+Luke,Leia,Han,C3PO,R2D2,Chewie,Yavin
+Han,Leia,Luke,Chewie,R2D2,C3PO,Yavin
+
