@@ -1,4 +1,21 @@
 
+# in.file is a comma-separated file with (possibly) more than one entry per
+# line. out.file will be given all the proper combinations to break it down
+# into pairs only.
+#
+# example:
+#  in.file:
+#   a,b
+#   c,d,e,f
+#
+#  out.file:
+#   a,b
+#   c,d
+#   c,e
+#   c,f
+#   d,e
+#   d,f
+#   e,f
 flattenScenes <- function(in.file, out.file=paste0(in.file,".flat")) {
 
     lines <- strsplit(readLines(in.file),",")
@@ -19,13 +36,3 @@ flattenScenes <- function(in.file, out.file=paste0(in.file,".flat")) {
     write.csv(flattened.df, file=out.file, row.names=FALSE)
 }
 
-characters <- read.csv("chars.csv",header=TRUE)
-scenes <- graph.data.frame(
-    read.csv("scenes.csv.flat",header=TRUE),
-    directed=FALSE, vertices=characters)
-V(scenes)$color <- 
-    ifelse(characters$species == "human", "yellow",
-    ifelse(characters$species == "alien", "green",
-    ifelse(characters$species == "droid", "grey",
-    ifelse(characters$species == "wookie", "brown", "white"))))
-plot(scenes, edge.arrow.size=.5, vertex.size=22)
