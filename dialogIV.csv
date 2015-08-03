@@ -1,0 +1,250 @@
+"char1","char2","numUtterances","loc","epi"
+C3PO,R2D2,4,ship,IV
+R2D2,C3PO,3,ship,IV
+C3PO,R2D2,4,ship,IV
+R2D2,C3PO,3,ship,IV
+C3PO,R2D2,4,ship,IV
+R2D2,C3PO,3,ship,IV
+C3PO,R2D2,2,ship,IV
+R2D2,C3PO,2,ship,IV
+Vader,Leia,2,ship,IV
+Leia,Vader,2,ship,IV
+C3PO,R2D2,9,Tatooine,IV
+R2D2,C3PO,9,Tatooine,IV
+C3PO,R2D2,2,Tatooine,IV
+R2D2,C3PO,2,Tatooine,IV
+C3PO,R2D2,6,Tatooine,IV
+R2D2,C3PO,5,Tatooine,IV
+C3PO,Luke,2,Tatooine,IV
+Luke,R2D2,1,Tatooine,IV
+Luke,C3PO,2,Tatooine,IV
+Luke,Beru,4,Tatooine,IV
+Beru,Luke,2,Tatooine,IV
+Owen,Luke,3,Tatooine,IV
+Luke,Owen,3,Tatooine,IV
+Owen,C3PO,4,Tatooine,IV
+C3PO,Owen,4,Tatooine,IV
+C3PO,R2D2,5,Tatooine,IV
+R2D2,C3PO,4,Tatooine,IV
+Luke,C3PO,12,Tatooine,IV
+C3PO,Luke,11,Tatooine,IV
+R2D2,Luke,5,Tatooine,IV
+Luke,R2D2,2,Tatooine,IV
+Luke,Beru,1,Tatooine,IV
+Beru,Luke,1,Tatooine,IV
+Beru,Owen,2,Tatooine,IV
+Owen,Beru,2,Tatooine,IV
+Luke,Owen,11,Tatooine,IV
+Owen,Luke,9,Tatooine,IV
+Beru,Luke,1,Tatooine,IV
+Luke,Beru,1,Tatooine,IV
+Luke,C3PO,4,Tatooine,IV
+C3PO,Luke,4,Tatooine,IV
+Luke,Owen,1,Tatooine,IV
+Owen,Luke,1,Tatooine,IV
+Owen,Beru,1,Tatooine,IV
+Beru,Owen,1,Tatooine,IV
+Luke,C3PO,1,Tatooine,IV
+Luke,R2D2,1,Tatooine,IV
+R2D2,Luke,1,Tatooine,IV
+Luke,C3PO,1,Tatooine,IV
+C3PO,Luke,2,Tatooine,IV
+C3PO,R2D2,2,Tatooine,IV
+R2D2,C3PO,1,Tatooine,IV
+Luke,C3PO,1,Tatooine,IV
+Obi-wan,R2D2,3,Tatooine,IV
+R2D2,Obi-wan,2,Tatooine,IV
+Luke,Obi-wan,5,Tatooine,IV
+Obi-wan,Luke,7,Tatooine,IV
+Luke,C3PO,2,Tatooine,IV
+C3PO,Luke,1,Tatooine,IV
+C3PO,Luke,1,Tatooine,IV
+Luke,C3PO,1,Tatooine,IV
+Luke,Obi-wan,9,Tatooine,IV
+Obi-wan,Luke,13,Tatooine,IV
+R2D2,Obi-wan,1,Tatooine,IV
+Tarkin,Vader,1,Death Star,IV
+Luke,Obi-wan,4,Tatooine,IV
+Obi-wan,Luke,3,Tatooine,IV
+Vader,Leia,1,Death Star,IV
+Luke,Obi-wan,1,Tatooine,IV
+Obi-wan,Luke,1,Tatooine,IV
+Luke,Obi-wan,2,Mos Eisley,IV
+Obi-wan,Luke,2,Mos Eisley,IV
+C3PO,R2D2,1,Mos Eisley,IV
+R2D2,C3PO,1,Mos Eisley,IV
+Obi-wan,Chewie,1,Mos Eisley,IV
+Chewie,Obi-wan,1,Mos Eisley,IV
+Obi-wan,Snaggletooth,1,Mos Eisley,IV
+Snaggletooth,Luke,2,Mos Eisley,IV
+Luke,Snaggletooth,2,Mos Eisley,IV
+Walrusman,Luke,1,Mos Eisley,IV
+Luke,C3PO,1,Mos Eisley,IV
+C3PO,Luke,1,Mos Eisley,IV
+Obi-wan,Luke,1,Mos Eisley,IV
+R2D2,C3PO,1,Mos Eisley,IV
+C3PO,R2D2,1,Mos Eisley,IV
+Han,Luke,1,Mos Eisley,IV
+Han,Obi-wan,8,Mos Eisley,IV
+Obi-wan,Han,6,Mos Eisley,IV
+Luke,Han,2,Mos Eisley,IV
+Han,Chewie,1,Mos Eisley,IV
+Chewie,Han,1,Mos Eisley,IV
+Obi-wan,Luke,1,Mos Eisley,IV
+Luke,Obi-wan,1,Mos Eisley,IV
+Greedo,Han,6,Mos Eisley,IV
+Han,Greedo,4,Mos Eisley,IV
+Vader,Tarkin,1,Death Star,IV
+Tarkin,Vader,1,Death Star,IV
+R2D2,C3PO,2,Mos Eisley,IV
+C3PO,R2D2,3,Mos Eisley,IV
+Luke,Obi-wan,1,Mos Eisley,IV
+Obi-wan,Luke,2,Mos Eisley,IV
+Chewie,Obi-wan,1,Mos Eisley,IV
+Han,Luke,1,Mos Eisley,IV
+C3PO,Han,1,Mos Eisley,IV
+Han,Chewie,2,Falcon,IV
+Chewie,Han,1,Falcon,IV
+Obi-wan,Han,1,Falcon,IV
+Han,Obi-wan,1,Falcon,IV
+Luke,Han,3,Falcon,IV
+Han,Luke,4,Falcon,IV
+Leia,Tarkin,6,Death Star,IV
+Tarkin,Leia,6,Death Star,IV
+Tarkin,Vader,1,Death Star,IV
+Luke,Obi-wan,4,Falcon,IV
+Obi-wan,Luke,7,Falcon,IV
+Luke,Han,1,Falcon,IV
+Han,Luke,2,Falcon,IV
+Han,C3PO,2,Falcon,IV
+C3PO,Han,2,Falcon,IV
+C3PO,Chewie,1,Falcon,IV
+Chewie,R2D2,1,Falcon,IV
+C3PO,R2D2,2,Falcon,IV
+Tarkin,Vader,2,Death Star,IV
+Vader,Tarkin,1,Death Star,IV
+Han,Chewie,5,Falcon,IV
+Chewie,Han,3,Falcon,IV
+Han,Obi-wan,5,Falcon,IV
+Obi-wan,Han,5,Falcon,IV
+Obi-wan,Luke,2,Falcon,IV
+Luke,Obi-wan,1,Falcon,IV
+Han,Luke,7,Falcon,IV
+Luke,Han,8,Falcon,IV
+Vader,Tarkin,1,Death Star,IV
+Chewie,Han,1,Death Star,IV
+Luke,Han,1,Death Star,IV
+Han,Luke,1,Death Star,IV
+Han,Obi-wan,2,Death Star,IV
+Obi-wan,Han,1,Death Star,IV
+Chewie,Han,1,Death Star,IV
+Han,Chewie,1,Death Star,IV
+Han,Obi-wan,1,Death Star,IV
+Obi-wan,Han,1,Death Star,IV
+Han,C3PO,1,Death Star,IV
+R2D2,C3PO,3,Death Star,IV
+Luke,C3PO,7,Death Star,IV
+C3PO,Luke,5,Death Star,IV
+Obi-wan,Luke,4,Death Star,IV
+Luke,Obi-wan,2,Death Star,IV
+Luke,Han,13,Death Star,IV
+Han,Luke,12,Death Star,IV
+Luke,Han,1,Death Star,IV
+Luke,Han,1,Death Star,IV
+Han,Luke,3,Death Star,IV
+Luke,Leia,2,Death Star,IV
+Leia,Luke,2,Death Star,IV
+Vader,Tarkin,4,Death Star,IV
+Tarkin,Vader,4,Death Star,IV
+Chewie,Han,1,Death Star,IV
+Han,Chewie,2,Death Star,IV
+Han,Leia,2,Death Star,IV
+Leia,Han,5,Death Star,IV
+Luke,C3PO,2,Death Star,IV
+C3PO,Luke,1,Death Star,IV
+Luke,Han,1,Death Star,IV
+Han,Luke,4,Death Star,IV
+Han,Chewie,2,Death Star,IV
+Han,Leia,4,Death Star,IV
+Leia,Han,2,Death Star,IV
+Leia,Luke,3,Death Star,IV
+Chewie,Luke,1,Death Star,IV
+Luke,Han,5,Death Star,IV
+Han,Luke,2,Death Star,IV
+Luke,C3PO,3,Death Star,IV
+C3PO,Luke,1,Death Star,IV
+C3PO,R2D2,5,Death Star,IV
+R2D2,C3PO,2,Death Star,IV
+Han,Chewie,2,Death Star,IV
+Luke,Han,1,Death Star,IV
+Leia,Han,3,Death Star,IV
+Han,Leia,2,Death Star,IV
+Luke,C3PO,3,Death Star,IV
+C3PO,Luke,2,Death Star,IV
+Han,Luke,1,Death Star,IV
+Leia,Luke,1,Death Star,IV
+Luke,Leia,1,Death Star,IV
+Leia,Han,1,Death Star,IV
+Han,Leia,1,Death Star,IV
+Leia,Luke,4,Death Star,IV
+Luke,Leia,2,Death Star,IV
+C3PO,R2D2,1,Death Star,IV
+R2D2,C3PO,1,Death Star,IV
+Obi-wan,Vader,2,Death Star,IV
+Vader,Obi-wan,4,Death Star,IV
+Obi-wan,Luke,1,Death Star,IV
+Luke,Obi-wan,1,Death Star,IV
+Luke,Han,1,Death Star,IV
+Han,Luke,3,Death Star,IV
+Han,Leia,1,Death Star,IV
+Leia,Han,1,Death Star,IV
+Han,Chewie,1,Death Star,IV
+Chewie,Han,2,Death Star,IV
+Leia,Luke,2,Death Star,IV
+C3PO,R2D2,1,Death Star,IV
+Leia,Luke,3,Falcon,IV
+Luke,Leia,1,Falcon,IV
+Han,Leia,1,Falcon,IV
+Luke,Han,3,Falcon,IV
+Han,Luke,3,Falcon,IV
+Leia,Han,3,Falcon,IV
+Han,Chewie,2,Falcon,IV
+C3PO,R2D2,1,Falcon,IV
+Tarkin,Vader,2,Death Star,IV
+Vader,Tarkin,1,Death Star,IV
+Han,Leia,3,Falcon,IV
+Leia,Han,4,Falcon,IV
+Luke,Leia,1,Falcon,IV
+Leia,Luke,1,Falcon,IV
+Luke,Han,3,Falcon,IV
+Han,Luke,3,Falcon,IV
+Vader,Tarkin,1,Death Star,IV
+Luke,Han,3,Yavin,IV
+Han,Luke,4,Yavin,IV
+Han,Chewie,1,Yavin,IV
+Chewie,Han,1,Yavin,IV
+Luke,Leia,2,Yavin,IV
+Leia,Luke,2,Yavin,IV
+C3PO,R2D2,2,Yavin,IV
+R2D2,C3PO,2,Yavin,IV
+R2D2,Luke,1,Yavin,IV
+Luke,R2D2,1,Yavin,IV
+Biggs,Luke,3,Yavin,IV
+Luke,Biggs,2,Yavin,IV
+Biggs,Luke,4,space,IV
+Luke,Biggs,1,space,IV
+Han,Luke,1,space,IV
+Luke,Wedge,5,space,IV
+Wedge,Luke,6,space,IV
+R2D2,Luke,3,space,IV
+Luke,R2D2,4,space,IV
+Obi-wan,Luke,5,space,IV
+Luke,Han,1,Yavin,IV
+Han,Luke,3,Yavin,IV
+Leia,Han,1,Yavin,IV
+Luke,Leia,1,Yavin,IV
+C3PO,Luke,1,Yavin,IV
+Luke,C3PO,1,Yavin,IV
+C3PO,R2D2,1,Yavin,IV
+R2D2,Luke,1,Yavin,IV
+Leia,Obi-wan,1,Tatooine,IV

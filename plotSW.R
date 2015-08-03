@@ -42,5 +42,5 @@ readline("Press ENTER.")
 plot.sw.graph("mentions.csv","Mentions (in dialog)",
     multiplicity.column.name="numMentions",directed=TRUE,edge.lty="dashed")
 readline("Press ENTER.")
-plot.sw.graph("dialog.csv","Direct address (in dialog)",
+plot.sw.graph("dialogAll.csv","Direct address (in dialog)",
     multiplicity.column.name="numUtterances",directed=TRUE)
