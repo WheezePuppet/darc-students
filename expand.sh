@@ -20,6 +20,11 @@ else
         sed -i 's/\<veers\>/Veers/g' $1
         sed -i 's/\<needa\>/Needa/g' $1
         sed -i 's/\<chew\>/Chewie/g' $1
+        sed -i 's/\<dack\>/Dack/g' $1
+        sed -i 's/\<wedge\>/Wedge/g' $1
+        sed -i 's/\<yoda\>/Yoda/g' $1
+        sed -i 's/\<jab\>/Jabba/g' $1
+        sed -i 's/\<emp\>/Emperor/g' $1
         sed -i 's/\<lobot\>/Lobot/g' $1
         sed -i 's/\<snag\>/Snaggletooth/g' $1
         sed -i 's/\<walrus\>/Walrusman/g' $1
