@@ -35,7 +35,7 @@ plot.sw.graph <- function(csv.filename, title, directed=FALSE,
 }
 
 
-plot.sw.graph("scenes.csv.flat","Scenes in common",directed=FALSE)
+plot.sw.graph("scenesAll.csv","Scenes in common",directed=FALSE)
 readline("Press ENTER.")
 plot.sw.graph("touches.csv","Physical contacts",directed=FALSE)
 readline("Press ENTER.")

@@ -5,17 +5,17 @@
 #
 # example:
 #  in.file:
-#   a,b
-#   c,d,e,f
+#   a,b,loc1
+#   c,d,e,f,loc2
 #
 #  out.file:
-#   a,b
-#   c,d
-#   c,e
-#   c,f
-#   d,e
-#   d,f
-#   e,f
+#   a,b,loc1
+#   c,d,loc2
+#   c,e,loc2
+#   c,f,loc2
+#   d,e,loc2
+#   d,f,loc2
+#   e,f,loc2
 flattenScenes <- function(in.file, out.file=paste0(in.file,".flat")) {
 
     lines <- strsplit(readLines(in.file),",")

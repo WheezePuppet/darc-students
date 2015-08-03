@@ -25,5 +25,7 @@ else
         sed -i 's/\<ds\>/Death Star/g' $1
         sed -i 's/\<tat\>/Tatooine/g' $1
         sed -i 's/\<mos\>/Mos Eisley/g' $1
+        sed -i 's/\<lando\>/Lando/g' $1
+        sed -i 's/\<boba\>/Boba Fett/g' $1
     fi
 fi
