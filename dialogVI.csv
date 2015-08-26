@@ -1,0 +1,259 @@
+"char1","char2","numUtterances","loc","epi"
+Vader,Jerjerrod,6,Death Star,VI
+Jerjerrod,Death Star,6,Death Star,VI
+C3PO,R2D2,12,Tatooine,VI
+t2,C3PO,7,Tatooine,VI
+Bib Fortuna,C3PO,2,Tatooine,VI
+C3PO,Bib Fortuna,3,Tatooine,VI
+Bib Fortuna,R2D2,2,Tatooine,VI
+R2D2,C3PO,1,Jabbas Palace,VI
+C3PO,R2D2,4,Jabbas Palace,VI
+Jabba,C3PO,1,Jabbas Palace,VI
+C3PO,Jabba,2,Jabbas Palace,VI
+Luke,Jabba,4,Jabbas Palace,VI
+Bib Fortuna,Jabba,3,Jabbas Palace,VI
+C3PO,Droid Boss,4,Jabbas Palace,VI
+Droid Boss,C3PO,4,Jabbas Palace,VI
+Droid Boss,R2D2,2,Jabbas Palace,VI
+R2D2,Droid Boss,2,Jabbas Palace,VI
+Jabba,Oola,2,Jabbas Palace,VI
+Jabba,C3PO,3,Jabbas Palace,VI
+C3PO,Jabba,4,Jabbas Palace,VI
+Leia,Jabba,4,Jabbas Palace,VI
+Jabba,Leia,2,Jabbas Palace,VI
+Bib Fortuna,Leia,1,Jabbas Palace,VI
+C3PO,Leia,3,Jabbas Palace,VI
+Chewie,C3PO,1,Jabbas Palace,VI
+C3PO,Chewie,1,Jabbas Palace,VI
+Leia,Han,4,Jabbas Palace,VI
+Han,Leia,4,Jabbas Palace,VI
+Han,Jabba,3,Jabbas Palace,VI
+Jabba,Han,2,Jabbas Palace,VI
+Leia,Jabba,1,Jabbas Palace,VI
+Jabba,Leia,1,Jabbas Palace,VI
+Han,Chewie,6,Jabbas Palace,VI
+Chewie,Han,4,Jabbas Palace,VI
+Jabba,Bib Fortuna,1,Jabbas Palace,VI
+Bib Fortuna,Jabba,2,Jabbas Palace,VI
+Jabba,Bib Fortuna,1,Jabbas Palace,VI
+Luke,Bib Fortuna,4,Jabbas Palace,VI
+Bib Fortuna,Luke,5,Jabbas Palace,VI
+C3PO,Luke,1,Jabbas Palace,VI
+Jabba,Luke,3,Jabbas Palace,VI
+Luke,Jabba,3,Jabbas Palace,VI
+Luke,Jabba,2,Jabbas Palace,VI
+Jabba,Luke,1,Jabbas Palace,VI
+Han,C3PO,3,Jabbas Palace,VI
+Leia,Han,1,Jabbas Palace,VI
+Luke,Han,4,Jabbas Palace,VI
+Han,Luke,4,Jabbas Palace,VI
+C3PO,Han,4,Jabbas Palace,VI
+C3PO,Luke,4,Jabbas Palace,VI
+C3PO,Leia,4,Jabbas Palace,VI
+C3PO,Chewie,4,Jabbas Palace,VI
+R2D2,C3PO,2,barge,VI
+C3PO,R2D2,4,barge,VI
+Jabba,Leia,1,barge,VI
+Han,Luke,2,Tatooine,VI
+Luke,Han,2,Tatooine,VI
+Luke,Lando,2,Tatooine,VI
+Lando,Luke,1,Tatooine,VI
+Luke,Chewie,1,Tatooine,VI
+Lando,Chewie,1,Tatooine,VI
+Chewie,Han,3,Tatooine,VI
+Han,Chewie,8,Tatooine,VI
+Han,Lando,6,Tatooine,VI
+Lando,Han,5,Tatooine,VI
+Han,C3PO,1,Tatooine,VI
+Luke,Leia,3,Tatooine,VI
+Luke,Jabba,1,Tatooine,VI
+Luke,R2D2,1,Tatooine,VI
+R2D2,C3PO,1,Tatooine,VI
+C3PO,R2D2,1,Tatooine,VI
+C3PO,Luke,1,Tatooine,VI
+C3PO,Han,1,Tatooine,VI
+C3PO,Chewie,1,Tatooine,VI
+Han,Luke,1,ship,VI
+Luke,R2D2,2,ship,VI
+R2D2,Luke,2,ship,VI
+Luke,Leia,2,ship,VI
+Leia,Luke,1,ship,VI
+Emperor,Vader,6,Death Star,VI
+Vader,Emperor,3,Death Star,VI
+Luke,Yoda,7,Dagobah,VI
+Yoda,Luke,25,Dagobah,VI
+Luke,Obi-wan,10,Dagobah,VI
+Obi-wan,Luke,20,Dagobah,VI
+Luke,R2D2,2,Dagobah,VI
+R2D2,Luke,3,Dagobah,VI
+Luke,Leia,1,ship,VI
+Leia,Luke,1,ship,VI
+Leia,Han,2,ship,VI
+Han,like,1,ship,VI
+Luke,Han,2,ship,VI
+Luke,Chewie,1,ship,VI
+Han,Chewie,1,ship,VI
+Han,Madine,1,ship,VI
+Madine,Han,1,ship,VI
+Ackbar,Madine,1,ship,VI
+Mon Mothma,Madine,1,ship,VI
+C3PO,R2D2,2,ship,VI
+R2D2,C3PO,1,ship,VI
+Han,Lando,6,ship,VI
+Lando,Han,5,ship,VI
+Han,Chewie,2,ship,VI
+Chewie,Han,2,ship,VI
+Han,Leia,2,ship,VI
+Leia,Han,3,ship,VI
+Luke,Han,1,ship,VI
+C3PO,R2D2,1,ship,VI
+Han,Chewie,1,ship,VI
+Han,Leia,1,ship,VI
+Han,Luke,1,ship,VI
+Emperor,Vader,5,Death Star,VI
+Vader,Emperor,3,Death Star,VI
+Chewie,Han,3,ship,VI
+Han,Chewie,3,ship,VI
+Han,Leia,1,ship,VI
+Leia,Han,1,ship,VI
+Han,Luke,2,ship,VI
+Han,Piett,1,ship,VI
+Piett,Han,1,ship,VI
+Piett,Vader,3,ship,VI
+Vader,Piett,4,ship,VI
+Luke,Leia,2,ship,VI
+Luke,Han,2,ship,VI
+Luke,Chewie,2,ship,VI
+Han,Leia,1,ship,VI
+Han,Luke,1,ship,VI
+Han,Chewie,1,ship,VI
+C3PO,R2D2,1,Endor,VI
+Leia,Luke,2,Endor,VI
+Luke,Leia,3,Endor,VI
+Han,Leia,3,Endor,VI
+Han,Luke,4,Endor,VI
+Luke,Han,1,Endor,VI
+Luke,Leia,4,Endor,VI
+C3PO,R2D2,1,Endor,VI
+R2D2,C3PO,1,Endor,VI
+C3PO,Luke,1,Endor,VI
+Luke,R2D2,1,Endor,VI
+C3PO,Han,1,Endor,VI
+Han,Luke,2,Endor,VI
+Luke,Han,2,Endor,VI
+Leia,Wicket,10,Endor,VI
+Wicket,Leia,7,Endor,VI
+Emperor,Vader,8,Death Star,VI
+Vader,Emperor,6,Death Star,VI
+Luke,Han,4,Endor,VI
+Han,Luke,2,Endor,VI
+Luke,Chewie,1,Endor,VI
+Luke,C3PO,1,Endor,VI
+C3PO,Luke,3,Endor,VI
+C3PO,Han,4,Endor,VI
+Han,Chewie,5,Endor,VI
+Chewie,Han,3,Endor,VI
+Han,C3PO,3,Endor,VI
+Han,Leia,1,Endor,VI
+Han,C3PO,2,Endor,VI
+C3PO,Han,1,Endor,VI
+C3PO,Leia,1,Endor,VI
+Leia,C3PO,1,Endor,VI
+Luke,C3PO,3,Endor,VI
+C3PO,Luke,3,Endor,VI
+Luke,Leia,1,Endor,VI
+C3PO,R2D2,1,Endor,VI
+R2D2,C3PO,1,Endor,VI
+Han,C3PO,1,Endor,VI
+C3PO,Han,3,Endor,VI
+Han,Leia,1,Endor,VI
+Leia,Han,1,Endor,VI
+Han,Chewie,1,Endor,VI
+Leia,Luke,12,Endor,VI
+Luke,Leia,13,Endor,VI
+Leia,Han,3,Endor,VI
+Han,Leia,4,Endor,VI
+Vader,Luke,10,Endor,VI
+Luke,Vader,9,Endor,VI
+Leia,C3PO,1,Endor,VI
+Leia,Han,2,Endor,VI
+Han,Leia,1,Endor,VI
+C3PO,Wicket,2,Endor,VI
+Wicket,C3PO,2,Endor,VI
+Ackbar,Lando,2,ship,VI
+Lando,Ackbar,1,ship,VI
+Lando,abi,2,Falcon,VI
+abi,Lando,2,Falcon,VI
+C3PO,Leia,2,Endor,VI
+Leia,Han,1,Endor,VI
+Han,Leia,4,Endor,VI
+Han,Wicket,1,Endor,VI
+Wicket,Han,1,Endor,VI
+Wicket,C3PO,1,Endor,VI
+C3PO,Wicket,1,Endor,VI
+C3PO,Han,1,Endor,VI
+Emperor,Luke,13,Death Star,VI
+Luke,Emperor,3,Death Star,VI
+Vader,Emperor,1,Death Star,VI
+Vader,Luke,1,Death Star,VI
+Han,Chewie,2,Endor,VI
+Chewie,Han,1,Endor,VI
+Leia,Han,1,Endor,VI
+C3PO,R2D2,1,Endor,VI
+Wicket,C3PO,1,Endor,VI
+Lando,abi,2,Falcon,VI
+abi,Lando,2,Falcon,VI
+Lando,Ackbar,1,ship,VI
+Wedge,Lando,3,ship,VI
+Lando,Wedge,2,ship,VI
+Emperor,Luke,7,Death Star,VI
+Luke,Emperor,1,Death Star,VI
+Han,Leia,1,Endor,VI
+Leia,Han,1,Endor,VI
+Leia,R2D2,2,Endor,VI
+R2D2,C3PO,1,Endor,VI
+C3PO,R2D2,4,Endor,VI
+Chewie,C3PO,1,Endor,VI
+Lando,Wedge,1,ship,VI
+Emperor,Luke,2,Death Star,VI
+Lando,Ackbar,2,ship,VI
+Ackbar,Lando,2,ship,VI
+Leia,Han,1,Endor,VI
+Han,Leia,1,Endor,VI
+C3PO,Leia,1,Endor,VI
+C3PO,R2D2,2,Endor,VI
+Han,R2D2,1,Endor,VI
+Lando,Ackbar,2,ship,VI
+Ackbar,Lando,1,ship,VI
+Emperor,Luke,5,Death Star,VI
+Han,Chewie,2,Endor,VI
+Han,Leia,4,Endor,VI
+Leia,Han,2,Endor,VI
+C3PO,Leia,1,Endor,VI
+Emperor,Luke,2,Death Star,VI
+Luke,Vader,4,Death Star,VI
+Vader,Luke,4,Death Star,VI
+Lando,abi,1,Falcon,VI
+Han,Chewie,1,Endor,VI
+Chewie,Han,1,Endor,VI
+Vader,Luke,9,Death Star,VI
+Luke,Vader,2,Death Star,VI
+Luke,Emperor,3,Death Star,VI
+Emperor,Luke,4,Death Star,VI
+Ackbar,Lando,1,ship,VI
+Lando,abi,1,Falcon,VI
+Emperor,Luke,5,Death Star,VI
+Luke,Vader,1,Death Star,VI
+abi,Lando,2,Falcon,VI
+Lando,abi,3,Falcon,VI
+Wedge,Lando,1,Falcon,VI
+Luke,Vader,4,Death Star,VI
+Vader,Luke,7,Death Star,VI
+Wedge,Lando,3,ship,VI
+Lando,Wedge,1,ship,VI
+Lando,abi,1,Falcon,VI
+abi,Lando,1,Falcon,VI
+C3PO,R2D2,1,Endor,VI
+Han,Leia,3,Endor,VI
+Leia,Han,3,Endor,VI
+Wicket,Leia,1,Endor,VI
