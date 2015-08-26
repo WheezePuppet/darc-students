@@ -3,9 +3,8 @@ library(igraph)
 
 characters <- read.csv("chars.csv",header=TRUE)
 
-plot.sw.graph <- function(csv.filename, title, directed=FALSE,
-    multiplicity.column.name=NULL, edge.arrow.size=.5, vertex.size=20,
-    edge.lty="solid") {
+construct.sw.graph <- function(csv.filename, directed=FALSE,
+    multiplicity.column.name=NULL) {
 
     the.data.frame <- read.csv(csv.filename,header=TRUE)
     multigraph <- graph.data.frame(the.data.frame, 
@@ -18,29 +17,39 @@ plot.sw.graph <- function(csv.filename, title, directed=FALSE,
     }
 
     simplified.graph <- simplify(multigraph)
+    return(simplified.graph)
+}
 
-    V(simplified.graph)$color <- 
+plot.sw.graph <- function(sw.graph, title, edge.arrow.size=.5, vertex.size=20,
+    edge.lty="solid") {
+
+    V(sw.graph)$color <- 
         ifelse(characters$species == "human", "yellow",
         ifelse(characters$species == "alien", "green",
         ifelse(characters$species == "droid", "grey",
         ifelse(characters$species == "wookie", "brown", "white"))))
 
-    plot(simplified.graph, edge.arrow.size=edge.arrow.size, 
+    plot(sw.graph, edge.arrow.size=edge.arrow.size, 
         vertex.size=vertex.size,
         edge.lty=edge.lty,
-        edge.width=sqrt(E(simplified.graph)$weight),
+        edge.width=sqrt(E(sw.graph)$weight),
         layout=layout.fruchterman.reingold(
-            simplified.graph,weights=E(simplified.graph)$weight^.4),
+            sw.graph,weights=E(sw.graph)$weight^.4),
         main=title)
 }
 
 
-plot.sw.graph("scenesAll.csv","Scenes in common",directed=FALSE)
-readline("Press ENTER.")
-plot.sw.graph("touchesAll.csv","Physical contacts",directed=FALSE)
-readline("Press ENTER.")
-plot.sw.graph("mentionsAll.csv","Mentions (in dialog)",
-    multiplicity.column.name="numMentions",directed=TRUE,edge.lty="dashed")
-readline("Press ENTER.")
-plot.sw.graph("dialogAll.csv","Direct address (in dialog)",
+scenes <- construct.sw.graph("scenesAll.csv",directed=FALSE)
+touches <- construct.sw.graph("touchesAll.csv",directed=FALSE)
+dialog <- construct.sw.graph("dialogAll.csv",
     multiplicity.column.name="numUtterances",directed=TRUE)
+mentions <- construct.sw.graph("mentionsAll.csv",
+    multiplicity.column.name="numMentions",directed=TRUE)
+
+plot.sw.graph(scenes,"Scenes in common")
+readline("Press ENTER.")
+plot.sw.graph(touches,"Physical contacts")
+readline("Press ENTER.")
+plot.sw.graph(mentions,"Mentions (in dialog)",edge.lty="dashed")
+readline("Press ENTER.")
+plot.sw.graph(dialog,"Direct address (in dialog)")
