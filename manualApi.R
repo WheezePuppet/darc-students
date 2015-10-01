@@ -25,5 +25,6 @@ make.manual.twitter.api.call <- function(the.api.request) {
     )
 }
 
-
+# For example:
 hannahs.info <- make.manual.twitter.api.call("https://api.twitter.com/1.1/users/lookup.json?screen_name=hzontine")
+cat(hannahs.info$description,"\n")
