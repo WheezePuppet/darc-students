@@ -20,6 +20,7 @@
 #
 # Paste those below.
 
+# Hannah was here.
 key <- "your key here"
 secret <- "your secret here"
 
