@@ -20,7 +20,6 @@
 #
 # Paste those below.
 
-# Hannah was here.
-key <- "your key here"
-secret <- "your secret here"
+key <- "mGwXg8u650fqEeTAM7T1jDqMX"
+secret <- "WOavl2fMDCL0QxFkEoYswy6FWTBDRLvaN8DtpUbbpKRCOtSDE1"
 
