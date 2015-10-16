@@ -20,6 +20,6 @@
 #
 # Paste those below.
 
-key <- "mGwXg8u650fqEeTAM7T1jDqMX"
-secret <- "WOavl2fMDCL0QxFkEoYswy6FWTBDRLvaN8DtpUbbpKRCOtSDE1"
+key <- ""
+secret <- ""
 
