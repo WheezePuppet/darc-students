@@ -20,6 +20,6 @@
 #
 # Paste those below.
 
-key <- "your key here"
-secret <- "your secret here"
+key <- ""
+secret <- ""
 
