@@ -5,6 +5,7 @@ library(stringi)
 library(stringr)
 library(curl)
 library(twitteR)
+setup_twitter_oauth(key,secret,access_token,access_token_secret)
 
 #This first one will give you the (repeated) first quantity user IDs. Just unique() it if you only want the unrepeated IDs.
 #Make sure to remember to add the ‘#’ symbol in hashtag if you’re searching for a hashtag and not just a word.
