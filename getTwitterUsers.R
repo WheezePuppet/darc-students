@@ -1,4 +1,4 @@
-//From Liv:
+#From Liv:
 
 library(httr)
 library(stringi)
@@ -6,8 +6,8 @@ library(stringr)
 library(curl)
 library(twitteR)
 
-//This first one will give you the (repeated) first quantity user IDs. Just unique() it if you only want the unrepeated IDs.
-//Make sure to remember to add the ‘#’ symbol in hashtag if you’re searching for a hashtag and not just a word.
+#This first one will give you the (repeated) first quantity user IDs. Just unique() it if you only want the unrepeated IDs.
+#Make sure to remember to add the ‘#’ symbol in hashtag if you’re searching for a hashtag and not just a word.
 
 get.first.user.ids <- function(hashtag, quantity) {
   hashtag <- ifelse(grepl("#",hashtag),paste0("23",substring(hashtag,2)),hashtag)
@@ -39,7 +39,7 @@ get.first.user.ids <- function(hashtag, quantity) {
   return(users)
 }
 
-//In the get.first.user.ids, I call convert.user, which is this next function:
+#In the get.first.user.ids, I call convert.user, which is this next function:
 
 convert.user <- function(user) {
   if(suppressWarnings(is.na(as.numeric(user)))) {
@@ -50,7 +50,7 @@ convert.user <- function(user) {
   return(as.character(conversion))
 }
 
-//And here is the last one:
+#And here is the last one:
 
 get.user.info <- function(user) {
   user.name <- getUser(user)
