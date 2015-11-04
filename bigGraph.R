@@ -1,6 +1,8 @@
 
 source("getTwitterUsers.R")
 
+library(igraph)
+
 #The Vertex attributes must have a $name
 exists.in.graph <- function(user.id, twitter.graph){
   for(x in 1:length(V(twitter.graph))){
@@ -44,17 +46,6 @@ get.N <- function(search.string, n=100, first.user.ids){
 }
 
 build.big.graph <- function(everyone){
-  #make N
-  #make vertices
-  #for each vertex V1 in vertices
-    #ask liv who follows him/her -> fol
-    #intersect fol with vertices -> key_fol
-    #####possible if statement needed for empty key_fol
-    #for each follower V2 in key_fol
-      #add an edge from V1 to V2 in big graph
-  #simplify(big graph)->big.graph
-  #for each i in 1:99
-    # call hannah's "induced_up_to_time_t
   vertices<-unique(unlist(everyone))
   big.graph<-make_empty_graph(n = length(vertices), directed = TRUE) #creating empty graph
   #adding everyone to the graph as vertecies
@@ -66,8 +57,9 @@ build.big.graph <- function(everyone){
   # will be the vector c(1,2,3,2,4,5).
   edge.thing <- vector()
   #adding the edges to the graph
+  fol <- NULL
   for(v1 in 1:length(vertices)){
-      #getting the followers of each person in verticies storing in fol
+      #getting the followers of each person in vertices storing in fol
       user<-get.user.info(vertices[v1])
       fol<-c(fol,user$followers)
       #intersecting followers with vertices

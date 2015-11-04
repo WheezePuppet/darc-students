@@ -27,13 +27,20 @@
 #access_token_secret <- "KncwptmZl0KUfWbebINwOFvc4bbR7q2O2ixs7F19DPrXY"
 
 # This is Liv:
-#key <- "kzy13nReYwPakG1jflt2zPVUm"
-#secret <- "7t5E77ZzURWMJkFHS1J9SdIDThWounX9DMiWXRpN61je86vjN8"
-#access_token <- "3648031337-eefjrJKBbe7xqqpdXcQF9DLpxvpZYurRIJyiN9e"
-#access_token_secret <- "D1doHvZKXPn0sqBGXiJNuNcpuJmN2Z7BzkFbbbZDGt8qH"
+key <- "kzy13nReYwPakG1jflt2zPVUm"
+secret <- "7t5E77ZzURWMJkFHS1J9SdIDThWounX9DMiWXRpN61je86vjN8"
+access_token <- "3648031337-eefjrJKBbe7xqqpdXcQF9DLpxvpZYurRIJyiN9e"
+access_token_secret <- "D1doHvZKXPn0sqBGXiJNuNcpuJmN2Z7BzkFbbbZDGt8qH"
+
+#Aaron
+#key<- "QqNt2fPekjeu9jNzuyfIwxC2q"
+#secret <- "pidb0hZR2WtJwo594KnKEc0w9KcYOzwtubjLDKdecbtxOXRsb1"
+#access_token <- "551419186-TfWdgD0yNyipiWfVGx89rnwa8DOcUVGzQd1kd60d"
+#access_token_secret <- "TTiEJxJRvix00VuI3yDgFcmJzxjEqjhayGuPINED4IYGU"
 
 # This is Stephen:
-key <- "MlUmay5kA1vGWKokmmFofgRLX"
-secret <- "2FFYCyI2rhUIEltkepeNhVcZvYufXJukCJMqE1s3ALKoLYm7LD"
-access_token <- "1019144197-cMFsHfxTZiG0oyOidzM7bCW4uX6PzjXVOyNQTUK"
-access_token_secret <- "fmW3KSw0kSYH43QPqSxUscnZD8XF8M8oEJnKm2sRAcq70"
+#key <- "MlUmay5kA1vGWKokmmFofgRLX"
+#secret <- "2FFYCyI2rhUIEltkepeNhVcZvYufXJukCJMqE1s3ALKoLYm7LD"
+#access_token <- "1019144197-cMFsHfxTZiG0oyOidzM7bCW4uX6PzjXVOyNQTUK"
+#access_token_secret <- "fmW3KSw0kSYH43QPqSxUscnZD8XF8M8oEJnKm2sRAcq70"
+
