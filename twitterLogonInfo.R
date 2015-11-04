@@ -20,6 +20,8 @@
 #
 # Paste those below.
 
-key <- ""
-secret <- ""
+key <- "kzy13nReYwPakG1jflt2zPVUm"
+secret <- "7t5E77ZzURWMJkFHS1J9SdIDThWounX9DMiWXRpN61je86vjN8"
+access_token <- "3648031337-eefjrJKBbe7xqqpdXcQF9DLpxvpZYurRIJyiN9e"
+access_token_secret <- "D1doHvZKXPn0sqBGXiJNuNcpuJmN2Z7BzkFbbbZDGt8qH"
 
