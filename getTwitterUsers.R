@@ -6,11 +6,12 @@ library(stringr)
 library(curl)
 library(twitteR)
 source("manualApi.R") #now incorporating Steve's API
+source"(twitterLogonInfo.R")
 setup_twitter_oauth(key,secret,access_token,access_token_secret) #be sure to do this part!
 
 #this first one will give you the (repeated) first [quantity] user IDs. Just unique() it if you only want the unrepeated IDs.
 #make sure to remember to add the ‘#’ symbol in hashtag if you’re searching for a hashtag and not just a word.
-get.first.user.ids <- function(hashtag, quantity) {
+get.first.user.ids <- function(hashtag, quantity = 100) {
   hashtag <- ifelse(grepl("#",hashtag),paste0("23",substring(hashtag,2)),hashtag)
   count <- 0 #if you want, you can manually change this if, say, you already have the first 50 and you want the next 50
   users <- list() #changed it to a list so I could filter integers
@@ -21,7 +22,7 @@ get.first.user.ids <- function(hashtag, quantity) {
     users <- c(users,as.list(combine(first,second)))
     
     if(unique.users==length(unique(users))) { 
-      break() #breaks if our vector of users doesn't increase
+      break() #breaks if our list of users doesn't increase
     }
     
     #this part is for all those increadibly annoying people who decided to delete their twitter or set it to protected
