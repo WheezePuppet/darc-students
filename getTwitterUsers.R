@@ -5,19 +5,20 @@ library(stringi)
 library(stringr)
 library(curl)
 library(twitteR)
+source("twitterLogonInfo.R")
 source("manualApi.R") #now incorporating Steve's API
 setup_twitter_oauth(key,secret,access_token,access_token_secret) #be sure to do this part!
 
-#this first one will give you the (repeated) first [quantity] user IDs. Just unique() it if you only want the unrepeated IDs.
-#make sure to remember to add the ‘#’ symbol in hashtag if you’re searching for a hashtag and not just a word.
-get.first.user.ids <- function(hashtag, quantity) {
-  hashtag <- ifelse(grepl("#",hashtag),paste0("23",substring(hashtag,2)),hashtag)
+# Returns the (repeated) first [quantity] user IDs. Just unique() it if you only want the unrepeated IDs.
+# make sure to remember to add the ‘#’ symbol in search.string if you’re searching for a hashtag and not just a word.
+get.first.user.ids <- function(search.string, quantity=100) {
+  search.string <- ifelse(grepl("#",search.string),paste0("23",substring(search.string,2)),search.string)
   count <- 0 #if you want, you can manually change this if, say, you already have the first 50 and you want the next 50
   users <- list() #changed it to a list so I could filter integers
   unique.users <- 0 #we want this to match [quantity] in the end
   while(length(unique(users)) < quantity) {
-    first <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",hashtag,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))$response$list$trackback_author_nick
-    second <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",hashtag,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))$response$list$trackback_author_nick
+    first <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))$response$list$trackback_author_nick
+    second <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))$response$list$trackback_author_nick
     users <- c(users,as.list(combine(first,second)))
     
     if(unique.users==length(unique(users))) { 
