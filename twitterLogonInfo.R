@@ -20,13 +20,23 @@
 #
 # Paste those below.
 
-key <- "mGwXg8u650fqEeTAM7T1jDqMX"
-secret <- "WOavl2fMDCL0QxFkEoYswy6FWTBDRLvaN8DtpUbbpKRCOtSDE1"
-access_token <- "394926716-dHC5EZtfYQI0fgno0Yitvx4doHuz8JicBNxFBg6z"
-access_token_secret <- "KncwptmZl0KUfWbebINwOFvc4bbR7q2O2ixs7F19DPrXY"
+#Aaron
+key<- "QqNt2fPekjeu9jNzuyfIwxC2q"
+secret <- "pidb0hZR2WtJwo594KnKEc0w9KcYOzwtubjLDKdecbtxOXRsb1"
+access_token <- "551419186-TfWdgD0yNyipiWfVGx89rnwa8DOcUVGzQd1kd60d"
+access_token_secret <- "TTiEJxJRvix00VuI3yDgFcmJzxjEqjhayGuPINED4IYGU"
 
+
+#Hannah
+#key <- "mGwXg8u650fqEeTAM7T1jDqMX"
+#secret <- "WOavl2fMDCL0QxFkEoYswy6FWTBDRLvaN8DtpUbbpKRCOtSDE1"
+#access_token <- "394926716-dHC5EZtfYQI0fgno0Yitvx4doHuz8JicBNxFBg6z"
+#access_token_secret <- "KncwptmZl0KUfWbebINwOFvc4bbR7q2O2ixs7F19DPrXY"
+
+#Liv
 #key <- "kzy13nReYwPakG1jflt2zPVUm"
 #secret <- "7t5E77ZzURWMJkFHS1J9SdIDThWounX9DMiWXRpN61je86vjN8"
 #access_token <- "3648031337-eefjrJKBbe7xqqpdXcQF9DLpxvpZYurRIJyiN9e"
 #access_token_secret <- "D1doHvZKXPn0sqBGXiJNuNcpuJmN2Z7BzkFbbbZDGt8qH"
+
 
