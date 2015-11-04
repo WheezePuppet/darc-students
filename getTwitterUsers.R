@@ -7,6 +7,7 @@ library(curl)
 library(twitteR)
 source("twitterLogonInfo.R")
 source("manualApi.R") #now incorporating Steve's API
+source"(twitterLogonInfo.R")
 setup_twitter_oauth(key,secret,access_token,access_token_secret) #be sure to do this part!
 
 # Returns the (repeated) first [quantity] user IDs. Just unique() it if you only want the unrepeated IDs.
@@ -22,7 +23,7 @@ get.first.user.ids <- function(search.string, quantity=100) {
     users <- c(users,as.list(combine(first,second)))
     
     if(unique.users==length(unique(users))) { 
-      break() #breaks if our vector of users doesn't increase
+      break() #breaks if our list of users doesn't increase
     }
     
     #this part is for all those increadibly annoying people who decided to delete their twitter or set it to protected
