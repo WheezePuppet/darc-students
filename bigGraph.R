@@ -1,3 +1,6 @@
+
+source("getTwitterUsers.R")
+
 #The Vertex attributes must have a $name
 exists.in.graph <- function(user.id, twitter.graph){
   for(x in 1:length(V(twitter.graph))){
@@ -13,20 +16,29 @@ exists.in.graph <- function(user.id, twitter.graph){
 #   The first element of the kth element is the userid of the kth tweeter.
 #   The second element of the kth element is a vector of the kth tweeters'
 #     followers.
-get.N <- function(search.string, n=100){
+# first.user.ids is an optional argument, containing a vector of the first
+#   several user IDs who tweeted a certain search string. n and search.string
+#   are ignored in this case. Otherwise, get.first.user.ids() will be called 
+#   (from Liv) live.
+get.N <- function(search.string, n=100, first.user.ids){
 
   #gets all user ids of the first n tweeters (from Liv)
-  uids <- unique(get.first.user.ids(search.string,n))
+  if (missing(first.user.ids)) {
+    cat("Asking Liv for the first",n," tweeters of \"", search.string, "\"\n")
+    first.user.ids <- get.first.user.ids(search.string,n)
+  }
+  uids <- unique(first.user.ids)
 
   #get followers for each tweet.ids
   everyone<-vector("list",n)
   for(x in 1:length(uids)){
+    cat("Processing userid",x,"...\n")
     user<-get.user.info(uids[x])
     # (Do the unique here because we *need* the first element in everyone[[x]]
     # to be this tweeter's userid, and we feel nervous about unique() 
     # preserving the order.)
     fol<-unique(user$followers)
-    everyone[[x]]<-list(tweeter=uids[i],followers=fol)
+    everyone[[x]]<-list(tweeter=uids[x],followers=fol)
   }
   return(everyone)
 }
