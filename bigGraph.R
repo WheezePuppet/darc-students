@@ -37,7 +37,7 @@ get.N <- function(search.string, n=100, first.user.ids){
     # (Do the unique here because we *need* the first element in everyone[[x]]
     # to be this tweeter's userid, and we feel nervous about unique() 
     # preserving the order.)
-    fol<-unique(user$followers)
+    fol<-unique(user$followerIDs)
     everyone[[x]]<-list(tweeter=uids[x],followers=fol)
   }
   return(everyone)

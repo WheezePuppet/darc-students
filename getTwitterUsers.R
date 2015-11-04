@@ -7,7 +7,6 @@ library(curl)
 library(twitteR)
 source("twitterLogonInfo.R")
 source("manualApi.R") #now incorporating Stephen's API
-source("twitterLogonInfo.R")
 setup_twitter_oauth(key,secret,access_token,access_token_secret) #be sure to do this part!
 
 # Returns the (repeated) first [quantity] user IDs. Just unique() it if you only want the unrepeated IDs.
