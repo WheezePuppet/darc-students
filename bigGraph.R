@@ -82,3 +82,25 @@ build.big.graph <- function(everyone){
   big.graph <- add_edges(big.graph, edge.thing)
   return(big.graph)
 }
+
+make.medium.graph <- function(everyone){
+  vertices<-unique(everyone)
+  medium.graph<-make_empty_graph(n = length(vertices), directed = TRUE) #creating empty graph
+  #adding everyone to the graph as vertecies
+  V(medium.graph)$name<-vertices
+  
+  # edge.thing is a vector of even length which contains pairs of vertices
+  # corresponding to the edges, all in a row.
+  # For instance, if we want to add the edges 1->2, 3->2, 4->5, edge.thing
+  # will be the vector c(1,2,3,2,4,5).
+  edge.thing <- vector()
+  #adding the edges to the graph
+  for(v1 in 1:length(vertices)){
+    for(v2 in 1:length(vertices[[v1]])){
+      edge.thing <- c(edge.thing, vertices[v1], vertices[[v1]][v2])
+    }
+    # attribute for each of Hannah's cooked graphs.
+  }
+  medium.graph<- add_edges(medium.graph, edge.thing)
+  return(medium.graph)
+}
