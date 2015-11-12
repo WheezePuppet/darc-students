@@ -5,20 +5,22 @@ library(stringi)
 library(stringr)
 library(curl)
 library(twitteR)
-source("manualApi.R") #now incorporating Steve's API
-source"(twitterLogonInfo.R")
+source("twitterLogonInfo.R")
+source("manualApi.R") #now incorporating Stephen's API
 setup_twitter_oauth(key,secret,access_token,access_token_secret) #be sure to do this part!
 
-#this first one will give you the (repeated) first [quantity] user IDs. Just unique() it if you only want the unrepeated IDs.
-#make sure to remember to add the ‘#’ symbol in hashtag if you’re searching for a hashtag and not just a word.
-get.first.user.ids <- function(hashtag, quantity = 100) {
-  hashtag <- ifelse(grepl("#",hashtag),paste0("23",substring(hashtag,2)),hashtag)
+# Returns the (repeated) first [quantity] user IDs. Just unique() it if you only want the unrepeated IDs.
+# make sure to remember to add the ‘#’ symbol in search.string if you’re searching for a hashtag and not just a word.
+get.first.user.ids <- function(search.string, quantity=100) {
+  search.string <- ifelse(grepl("#",search.string),paste0("23",substring(search.string,2)),search.string)
   count <- 0 #if you want, you can manually change this if, say, you already have the first 50 and you want the next 50
   users <- list() #changed it to a list so I could filter integers
   unique.users <- 0 #we want this to match [quantity] in the end
+
+  cat("So far, we have",length(users),"unique users...\n")
   while(length(unique(users)) < quantity) {
-    first <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",hashtag,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))$response$list$trackback_author_nick
-    second <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",hashtag,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))$response$list$trackback_author_nick
+    first <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))$response$list$trackback_author_nick
+    second <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))$response$list$trackback_author_nick
     users <- c(users,as.list(combine(first,second)))
     
     if(unique.users==length(unique(users))) { 
@@ -27,7 +29,9 @@ get.first.user.ids <- function(hashtag, quantity = 100) {
     
     #this part is for all those increadibly annoying people who decided to delete their twitter or set it to protected
     #I'm lookin' at you, @_ninjalove and @kathrinoutloud >:(
+    cat("Dealing with annoying people like @_ninjalove...\n")
     for(i in (unique.users + 1):length(users)) { #only looks at new data
+      cat("This is a generic bread crumb.\n")
       if(!is.numeric(users[[i]]) && !is.na(users[[i]])) { #reduces twitteR calls by only grabbing usernames—fails in the case of all-numeral usernames
         if(curl_fetch_memory(paste0("twitter.com/",users[[i]]))$status_code==404) { #filters out deleted users
           users[grepl(unlist(users)[[i]],unlist(users))] <- NA #replaces all deleted usernames with 'NA'
@@ -48,8 +52,9 @@ get.first.user.ids <- function(hashtag, quantity = 100) {
     } else {
       count <- (count + 1) #goes to next page of results
     }
+  cat("So far, we have",length(users),"unique users...\n")
   }
-  return(users)
+  return(unlist(users))
 } #tada!
 
 #this function converts usernames to their matching user IDs and vice-versa
@@ -64,11 +69,12 @@ convert.user <- function(user) { #of course, I'm assuming you don't have someone
 
 #this will give you the username, user ID, follower IDs, and friend IDs of a user given a valid username or user ID
 get.user.info <- function(user) {
-  user.name <- getUser(user) #uses twitteR to get the info
-  user.id <- user.name$id #grabs the user ID out of said info
-  follower.list <- user.name$getFollowerIDs() #and the follower IDs
-  friend.list <- c(user.name$getFriendIDs()) #you get the picture
-  user.info <- list(user.name,user.id,follower.list,friend.list) #a list of lists
+  user.info <- getUser(user) #uses twitteR to get the info
+  user.id <- user.info$id #grabs the user ID out of said info
+  follower.list <- user.info$getFollowerIDs() #and the follower IDs
+#  friend.list <- c(user.info$getFriendIDs()) #you get the picture
+friend.list <- NULL
+  user.info <- list(user.info,user.id,follower.list,friend.list) #a list of lists
   names(user.info) <- c("username","userID","followerIDs","friendIDs") #names lists for your convenience
   return(user.info)
 } #the end
