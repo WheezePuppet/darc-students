@@ -1,4 +1,5 @@
-
+#new.everyone$graph[n]==vector of the followers of the nth tweeter
+#new.everyone$graph==nth tweeters xth follower
 source("getTwitterUsers.R")
 
 library(igraph)
@@ -14,7 +15,8 @@ exists.in.graph <- function(user.id, twitter.graph){
   return(FALSE)
 }
 
-# Return a list with n elements, each of which is a list with two elements:
+# Returns a list with 2 elements, one of which is graph and one is attributes
+#   graph is a list of n elements, each of which is a list with two elements:
 #   The first element of the kth element is the userid of the kth tweeter.
 #   The second element of the kth element is a vector of the kth tweeters'
 #     followers.
@@ -23,7 +25,6 @@ exists.in.graph <- function(user.id, twitter.graph){
 #   are ignored in this case. Otherwise, get.first.user.ids() will be called 
 #   (from Liv) live.
 get.N <- function(search.string, n=100, first.user.ids){
-
   #gets all user ids of the first n tweeters (from Liv)
   if (missing(first.user.ids)) {
     cat("Asking Liv for the first",n," tweeters of \"", search.string, "\"\n")
@@ -33,6 +34,7 @@ get.N <- function(search.string, n=100, first.user.ids){
 
   #get followers for each tweet.ids
   everyone<-vector("list",n)
+  attr<-vector("list",n)
   for(x in 1:length(uids)){
     cat("Processing userid",x,"...\n")
     user<-get.user.info(uids[x])
@@ -41,12 +43,16 @@ get.N <- function(search.string, n=100, first.user.ids){
     # preserving the order.)
     fol<-unique(user$followerIDs)
     everyone[[x]]<-list(tweeter=uids[x],followers=fol)
+    ####### WHERE DO I FIND TIMESTAMP IN THE CODE???
+    attr[[x]]<-list(tweet.date=x)
   }
-  return(everyone)
+  new_everyone<-list(graph=everyone,attribute=attr)
+  return(new_everyone)
 }
 
+# have NOT changed this to accept the new.everyone
 build.big.graph <- function(everyone){
-  vertices<-unique(unlist(everyone))
+  vertices<-unique(unlist(everyone[1]))
   big.graph<-make_empty_graph(n = length(vertices), directed = TRUE) #creating empty graph
   #adding everyone to the graph as vertecies
   V(big.graph)$name<-vertices
@@ -84,10 +90,10 @@ build.big.graph <- function(everyone){
 }
 
 make.medium.graph <- function(everyone){
-  vertices<-unique(everyone)
-  medium.graph<-make_empty_graph(n = length(vertices), directed = TRUE) #creating empty graph
+  vertices<-unique(everyone$graph)
+  medium.graph<-make_empty_graph(n = length(unlist(vertices)), directed = TRUE) #creating empty graph
   #adding everyone to the graph as vertecies
-  V(medium.graph)$name<-vertices
+  V(medium.graph)$name<-unlist(vertices)
   
   # edge.thing is a vector of even length which contains pairs of vertices
   # corresponding to the edges, all in a row.
