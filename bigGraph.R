@@ -1,5 +1,4 @@
-#new.everyone$graph[n]==vector of the followers of the nth tweeter
-#new.everyone$graph==nth tweeters xth follower
+
 source("getTwitterUsers.R")
 
 library(igraph)
