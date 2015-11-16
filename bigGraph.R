@@ -90,7 +90,7 @@ build.big.graph <- function(everyone){
 
 make.medium.graph <- function(everyone){
   vertices<-everyone$graph
-  medium.graph<-make_empty_graph(n = length(unlist(vertices)), directed = TRUE) #creating empty graph
+  medium.graph<-make_empty_graph(n = length(unique(unlist(vertices))), directed = TRUE) #creating empty graph
   #adding everyone to the graph as vertecies
   V(medium.graph)$name<-unique(unlist(vertices))
   
@@ -101,8 +101,9 @@ make.medium.graph <- function(everyone){
   edge.thing <- vector()
   #adding the edges to the graph
   for(v1 in 1:length(vertices)){
-    for(v2 in 1:length(vertices[[v1]])){
-      edge.thing <- c(edge.thing, vertices[v1]$tweeter, vertices[[v1]][v2])
+    for(v2 in 1:(length(vertices[[v1]]$followers))){
+      edge.thing <- c(edge.thing, vertices[[v1]]$tweeter, 
+            vertices[[v1]]$followers[v2])
     }
     # attribute for each of Hannah's cooked graphs.
   }
