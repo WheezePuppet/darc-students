@@ -76,7 +76,7 @@ build.big.graph <- function(everyone){
         #add_edges(big.graph, c(vertices[v1], vertices[v2])) -> big.graph
         edge.thing <- c(edge.thing, vertices[v1], vertices[v2])
       }
-      #setting the date for the verticies
+      #setting the date for the vertices
       # Stephen: we don't need to do this, since we only want a graph 
       # attribute for each of Hannah's cooked graphs.
       #for(x in 1:length(tweet.ids)){
