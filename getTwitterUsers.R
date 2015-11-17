@@ -1,5 +1,4 @@
 #From Liv:
-
 library(httr)
 library(stringi)
 library(stringr)
@@ -113,3 +112,82 @@ combine <- function(first,second) {
   }
   return(longer)
 } #I don't think I've put this much brain power into something since I tried to visualize the 4th dimension
+
+#alright, let's see how this works…
+#this will return a list, 100-long when unique'd by name, of the first hundred (repeated) user IDs
+#each entry in the list (named for the user ID) is its own list, the first element being $user, the second element
+#being $date (which I may need to format differently?), and the third being $followers (a vector of up to 25k friend IDs)
+get.first.results <- function(search.string, quantity = 100) {
+  search.string <- ifelse(grepl("#",search.string),paste0("23",substring(search.string,2)),search.string) #formats query
+  count <- 0 #while() loop counter
+  beginning <- 1 #a starting point for each subsequent [count]
+  users <- list() #initially the usernames — later the user IDs
+  tweet.dates <- c() #POSIX dates
+  rem <- c() #vector of protected/404 users be removed
+  while(length(unique(users)) < quantity) { #main loop
+    first <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
+    first.usernames <- first$response$list$trackback_author_nick
+    first.dates <- first$response$list$trackback_date #calls manual API once…
+    second <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
+    second.usernames <- second$response$list$trackback_author_nick
+    second.dates <- second$response$list$trackback_date #…and twice
+    #this collects usernames/dates and merges them with each [count]
+    users <- c(users,as.list(combine(first.usernames,second.usernames)))
+    tweet.dates <- unique(c(tweet.dates,combine(first.dates,second.dates)))
+    #see [combine()] for details
+    if(beginning > length(unique(users))) {
+      break() #breaks if our list of users doesn't increase
+    } else {
+      rem <- unique(rem) #gets rid of repeated usernames to be removed each [count]
+      names(users)[beginning:length(users)] <- users[beginning:length(users)] #names all entries in [users] after themselves
+      names(users[beginning:length(users)])[c(which(users[beginning:length(users)]%in%rem))] <- rep("~") #marks usernames to be removed
+    } #basically, I use "~" to identify users we can't use
+    
+    for(i in beginning:length(users)) { #where most of the important stuff goes on
+      if(names(users)[i] != "~" && length(users[[i]]) == 1) { #only looks at usernames that haven't been marked with "~"
+        if(curl_fetch_memory(paste0("twitter.com/",users[[i]]))$status_code==404) { #checks for 404 (deleted/banned user) error
+          rem <- c(rem,users[[i]]) #adds these names for removal
+          names(users)[grep(names(users)[[i]],names(users))] <- rep("~") #marks all matching names with "~"
+        } else {
+          user.info <- getUser(users[[i]]) #calls twitteR to get user info
+          if(user.info$protected) { #same thing as above, but for protected users
+            rem <- c(rem,users[[i]])
+            names(users)[grep(names(users)[[i]],names(users))] <- rep("~")
+          } else { 
+            names(users)[grep(names(users)[[i]],names(users))] <- rep(user.info$id) #converts all atching usernames to IDs
+            if(names(users)[i]%in%names(users)[1:(i - 1)]) { #checks for any matching usernames in previous [count]
+              users[[i]] <- (users[names(users)[i]%in%names(users)[1:(i - 1)]])[[i]] #if successful, clones that information into this entry
+            } else {
+              users[[i]] <- user.info$getFollowerIDs() #otherwise, calls twitteR to get follower IDs
+            } #and this next bit clones the friend ID vector onto any subsequent matching user ID entries
+            users[i:length(users)] <- replace(users[i:length(users)],which(names(users[i:length(users)])==names(users)[i]),users[i])
+          }
+        }
+      }
+    } #and so ends the for() loop that does most of the work
+    
+    tweet.dates <- tweet.dates[-which(names(users)=="~")] #removes the [tweet.dates] values matching those in [users]
+    users <- users[-which(names(users)=="~")] #removes all users marked with "~"
+    
+    while(length(tweet.dates) > length(users)) { 
+      tweet.dates <- tweet.dates[-length(tweet.dates)] #ensures [tweet.dates] isn't longer than [users]
+    }
+    
+    if(length(unique(users)) >= quantity) { #this part only happens when you're essentially done
+      while(length(unique(users)) > quantity) {
+        users <- users[-length(users)] #trims the excess at the end so we only get 100 unique user IDs
+        tweet.dates <- tweet.dates[-length(tweet.dates)] #the same for the dates
+      }
+      tweet.dates <- as.POSIXct(tweet.dates,origin="1970-01-01",tz="GMT") #converts the date to be readable
+      #I may need to tweak this slightly?
+      for(n in 1:length(users)){ #final formatting
+        users[[n]] <-  list(names(users)[[n]],tweet.dates[n],users[[n]]) #upgrades [users] from list of vectors, to list of lists
+        names(users[[n]]) <- c("userID","date","followers") #names these sublists
+      } #end of the "essentially done" if()
+    } else { #this part is for when you don't have enough (unique) user IDs and have to loop through the code again
+      count <- (count + 1) #increases [count]
+      beginning <- (length(users) + 1) #bumps up the start point for the next iteration to save on unnecessary loops
+    }
+  }
+  return(users)
+} #you're welcome
