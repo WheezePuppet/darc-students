@@ -7,8 +7,18 @@ induced.subgraph.at.time.t <- function(g, N, t){
   #raw.graph <- induced_subgraph(g, which(V(g)$name %in% tweeters), impl= c("auto"))
   vec<- c(pwners$graph[[t]]$tweeter, pwners$graph[[t]]$followers)
   raw.graph <- induced_subgraph(g, vec, impl=c("auto"))
+ 
+  #Bad way
   #raw.graph$attr <- timestamp
+  #Good way
+  #If we want timestamp of the tweeter's first tweet
+  raw.graph <- set_graph_attr(raw.graph, "Time", timestamp)
+
+  #Bad way
   #V(raw.graph)$name <- tweeter
+  #Good way
+  raw.graph <- set_graph_attr(raw.graph, "Tweeter", tweeter)
+
   return (raw.graph)
 }
 

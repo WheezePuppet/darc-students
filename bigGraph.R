@@ -133,9 +133,9 @@ convert.liv.to.aaron <- function(liv.ids) {
 # The first 10 pwners graph has 1 weak component.
 # Now isn't that interesting....
 #
-get.N("pwn",10) -> pwners
-make.medium.graph(pwners) -> pwners.graph
-table(components(pwners.graph,mode="weak")$csize)
+#get.N("pwn",10) -> pwners
+#make.medium.graph(pwners) -> pwners.graph
+#table(components(pwners.graph,mode="weak")$csize)
 #
 # get.N("#AisMona",10) -> moners
 # make.medium.graph(moners) -> moners.graph
