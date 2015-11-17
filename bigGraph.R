@@ -98,15 +98,47 @@ make.medium.graph <- function(everyone){
   # corresponding to the edges, all in a row.
   # For instance, if we want to add the edges 1->2, 3->2, 4->5, edge.thing
   # will be the vector c(1,2,3,2,4,5).
-  edge.thing <- vector()
+lengths <- sapply(vertices, function(vertex) {
+    length(vertex$followers)
+})
+  edge.thing <- vector(length=sum(lengths)*2)
+  counter.thing <- 1
   #adding the edges to the graph
   for(v1 in 1:length(vertices)){
+    cat("Processing ",v1,"...\n",sep="")
     for(v2 in 1:(length(vertices[[v1]]$followers))){
-      edge.thing <- c(edge.thing, vertices[[v1]]$tweeter, 
-            vertices[[v1]]$followers[v2])
+      edge.thing[counter.thing] <- vertices[[v1]]$tweeter
+      counter.thing <- counter.thing + 1
+      edge.thing[counter.thing] <- vertices[[v1]]$followers[v2]
+      counter.thing <- counter.thing + 1
     }
     # attribute for each of Hannah's cooked graphs.
   }
   medium.graph<- add_edges(medium.graph, edge.thing)
   return(medium.graph)
 }
+
+
+#for instance, convert.liv.to.aaron(blacklivesmatter.friends) -> aaron
+convert.liv.to.aaron <- function(liv.ids) {
+    aaron <- vector("list",length(liv.ids))
+    for (i in 1:length(liv.ids)) {
+        aaron[[i]] <- list(tweeter=names(liv.ids)[i],followers=liv.ids[[i]])
+    }
+    list(graph=aaron,attribute=NULL)
+}
+
+# What we found out today 11/16:
+# The first 10 AisMoners graph has 9 weak components.
+# The first 10 pwners graph has 1 weak component.
+# Now isn't that interesting....
+#
+# get.N("pwn",10) -> pwners
+# make.medium.graph(pwners) -> pwners.graph
+# table(components(pwners.graph,mode="weak")$csize)
+#
+# get.N("#AisMona",10) -> moners
+# make.medium.graph(moners) -> moners.graph
+# table(components(moners.graph,mode="weak")$csize)
+
+
