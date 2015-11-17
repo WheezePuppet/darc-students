@@ -1,5 +1,6 @@
 library(igraph)
 
+#Creates a subgraph of graph g using the vertices from N at tweeter #t
 induced.subgraph.at.time.t <- function(g, N, t){
   tweeter <- N$graph[[t]]$tweeter
   followers <- N$graph[[t]]$followers
@@ -21,13 +22,29 @@ induced.subgraph.at.time.t <- function(g, N, t){
 
   return (raw.graph)
 }
-
+#Creates a subgraph of graph g using the vertices from N from tweeter 1 through t
 induced.subgraph.up.to.time.t <- function(g, N, t){
-  tweeters<- unique(unlist(N$g[1:t]))
-  timestamps <- N$attribute[[t]]$tweet.date
-  cooked.graph <- induced_subgraph(g, which(V(g)$name %in% tweeters), impl = c("auto"))
-  cooked.graph$attr <- timestamps
-  V(cooked.graph)$name <- tweeters[]
+  tweeter<- c()
+  followers<- vector("list")
+  timestamp<- c()
+  x <- 1:t
+  for (i in x){
+	tweeter[i] <- N$graph[[i]]$tweeter
+#	followers[i] <- N$graph[[i]]$followers
+ 	timestamp[i] <- N$attribute[[i]]$tweet.date
+  }
+  vec <- c(tweeter, followers)
+  cooked.graph <- induced_subgraph(g, vec, impl=c("auto"))
+
+  #Do we want time and tweeter attributes here?
+  
+
+
+  #tweeters<- unique(unlist(N$g[1:t]))
+  #timestamps <- N$attribute[[t]]$tweet.date
+  #cooked.graph <- induced_subgraph(g, which(V(g)$name %in% tweeters), impl = c("auto"))
+  #cooked.graph$attr <- timestamps
+  #V(cooked.graph)$name <- tweeters[]
   return (cooked.graph)
 }
 
