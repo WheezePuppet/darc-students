@@ -137,8 +137,8 @@ convert.liv.to.aaron <- function(liv.ids) {
 #make.medium.graph(pwners) -> pwners.graph
 #table(components(pwners.graph,mode="weak")$csize)
 #
- get.N("#AisMona",10) -> moners
- make.medium.graph(moners) -> moners.graph
- table(components(moners.graph,mode="weak")$csize)
+# get.N("#AisMona",10) -> moners
+# make.medium.graph(moners) -> moners.graph
+# table(components(moners.graph,mode="weak")$csize)
 
 
