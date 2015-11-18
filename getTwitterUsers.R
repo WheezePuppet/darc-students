@@ -138,15 +138,17 @@ get.first.results <- function(search.string, quantity = 100) {
     if(beginning > length(unique(users))) {
       break() #breaks if our list of users doesn't increase
     } else {
-      rem <- unique(rem) #gets rid of repeated usernames to be removed each [count]
       names(users)[beginning:length(users)] <- users[beginning:length(users)] #names all entries in [users] after themselves
-      names(users[beginning:length(users)])[c(which(users[beginning:length(users)]%in%rem))] <- rep("~") #marks usernames to be removed
-    } #basically, I use "~" to identify users we can't use
+      if(length(rem) > 0) {
+        rem <- unique(rem) #gets rid of repeated usernames to be removed each [count]
+        names(users[beginning:length(users)])[c(which(users[beginning:length(users)]%in%rem))] <- rep("~") #marks usernames to be removed
+      } #basically, I use "~" to identify users we can't use
+    }
     
     for(i in beginning:length(users)) { #where most of the important stuff goes on
       if(names(users)[i] != "~" && length(users[[i]]) == 1) { #only looks at usernames that haven't been marked with "~"
-        if(curl_fetch_memory(paste0("twitter.com/",users[[i]]))$status_code==404) { #checks for 404 (deleted/banned user) error
-          rem <- c(rem,users[[i]]) #adds these names for removal
+        if(curl_fetch_memory(paste0("twitter.com/",users[[i]]))$status_code==404) { #checks for 404 (deleted/suspended user) error
+          rem <- c(rem,users[[i]]) #adds these names for later removal
           names(users)[grep(names(users)[[i]],names(users))] <- rep("~") #marks all matching names with "~"
         } else {
           user.info <- getUser(users[[i]]) #calls twitteR to get user info
@@ -155,8 +157,8 @@ get.first.results <- function(search.string, quantity = 100) {
             names(users)[grep(names(users)[[i]],names(users))] <- rep("~")
           } else { 
             names(users)[grep(names(users)[[i]],names(users))] <- rep(user.info$id) #converts all atching usernames to IDs
-            if(names(users)[i]%in%names(users)[1:(i - 1)]) { #checks for any matching usernames in previous [count]
-              users[[i]] <- (users[names(users)[i]%in%names(users)[1:(i - 1)]])[[i]] #if successful, clones that information into this entry
+            if(counter > 0 && names(users)[i]%in%names(users)[1:(i - 1)]) { #checks for any matching usernames in previous [count]
+              users[[i]] <- (users[names(users)[i]%in%names(users)[1:(i - 1)]])[[1]] #if successful, clones that information into this entry
             } else {
               users[[i]] <- user.info$getFollowerIDs() #otherwise, calls twitteR to get follower IDs
             } #and this next bit clones the friend ID vector onto any subsequent matching user ID entries
@@ -166,11 +168,13 @@ get.first.results <- function(search.string, quantity = 100) {
       }
     } #and so ends the for() loop that does most of the work
     
-    tweet.dates <- tweet.dates[-which(names(users)=="~")] #removes the [tweet.dates] values matching those in [users]
-    users <- users[-which(names(users)=="~")] #removes all users marked with "~"
+    if("~"%in%names(users)) { #only does this if there's a user marked with "~"
+      tweet.dates <- tweet.dates[-which(names(users)=="~")] #removes the [tweet.dates] values matching those in [users]
+      users <- users[-which(names(users)=="~")] #removes all users marked with "~"
+    }
     
-    while(length(tweet.dates) > length(users)) { 
-      tweet.dates <- tweet.dates[-length(tweet.dates)] #ensures [tweet.dates] isn't longer than [users]
+    while(length(tweet.dates) > length(users)) { #ensures [tweet.dates] isn't longer than [users]
+      tweet.dates <- tweet.dates[-length(tweet.dates)] #I don't realistically ever expect this to happen…but hey, just in case
     }
     
     if(length(unique(users)) >= quantity) { #this part only happens when you're essentially done
