@@ -12,14 +12,14 @@ setup_twitter_oauth(key,secret,access_token,access_token_secret) #be sure to do 
 # make sure to remember to add the ‘#’ symbol in search.string if you’re searching for a hashtag and not just a word.
 get.first.user.ids <- function(search.string, quantity=100) {
   search.string <- ifelse(grepl("#",search.string),paste0("23",substring(search.string,2)),search.string)
-  count <- 0 #if you want, you can manually change this if, say, you already have the first 50 and you want the next 50
+  counter <- 0 #if you want, you can manually change this if, say, you already have the first 50 and you want the next 50
   users <- list() #changed it to a list so I could filter integers
   unique.users <- 0 #we want this to match [quantity] in the end
 
   cat("So far, we have",length(users),"unique users...\n")
   while(length(unique(users)) < quantity) {
-    first <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))$response$list$trackback_author_nick
-    second <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))$response$list$trackback_author_nick
+    first <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",counter*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))$response$list$trackback_author_nick
+    second <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",counter*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))$response$list$trackback_author_nick
     users <- c(users,as.list(combine(first,second)))
     
     if(unique.users==length(unique(users))) { 
@@ -49,7 +49,7 @@ get.first.user.ids <- function(search.string, quantity=100) {
         users <- users[-length(users)] #trims the excess at the end so we only get [quantity] different users
       }
     } else {
-      count <- (count + 1) #goes to next page of results
+      counter <- (counter + 1) #goes to next page of results
     }
   cat("So far, we have",length(users),"unique users...\n")
   }
@@ -119,19 +119,19 @@ combine <- function(first,second) {
 #being $date (which I may need to format differently?), and the third being $followers (a vector of up to 25k friend IDs)
 get.first.results <- function(search.string, quantity = 100) {
   search.string <- ifelse(grepl("#",search.string),paste0("23",substring(search.string,2)),search.string) #formats query
-  count <- 0 #while() loop counter
-  beginning <- 1 #a starting point for each subsequent [count]
+  counter <- 0 #while() loop counter
+  beginning <- 1 #a starting point for each subsequent [counter]
   users <- list() #initially the usernames — later the user IDs
   tweet.dates <- c() #POSIX dates
   rem <- c() #vector of protected/404 users be removed
   while(length(unique(users)) < quantity) { #main loop
-    first <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
+    first <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",counter*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
     first.usernames <- first$response$list$trackback_author_nick
     first.dates <- first$response$list$trackback_date #calls manual API once…
-    second <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",count*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
+    second <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",counter*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
     second.usernames <- second$response$list$trackback_author_nick
     second.dates <- second$response$list$trackback_date #…and twice
-    #this collects usernames/dates and merges them with each [count]
+    #this collects usernames/dates and merges them with each [counter]
     users <- c(users,as.list(combine(first.usernames,second.usernames)))
     tweet.dates <- unique(c(tweet.dates,combine(first.dates,second.dates)))
     #see [combine()] for details
@@ -140,7 +140,7 @@ get.first.results <- function(search.string, quantity = 100) {
     } else {
       names(users)[beginning:length(users)] <- users[beginning:length(users)] #names all entries in [users] after themselves
       if(length(rem) > 0) {
-        rem <- unique(rem) #gets rid of repeated usernames to be removed each [count]
+        rem <- unique(rem) #gets rid of repeated usernames to be removed each [counter]
         names(users[beginning:length(users)])[c(which(users[beginning:length(users)]%in%rem))] <- rep("~") #marks usernames to be removed
       } #basically, I use "~" to identify users we can't use
     }
@@ -157,7 +157,7 @@ get.first.results <- function(search.string, quantity = 100) {
             names(users)[grep(names(users)[[i]],names(users))] <- rep("~")
           } else { 
             names(users)[grep(names(users)[[i]],names(users))] <- rep(user.info$id) #converts all atching usernames to IDs
-            if(counter > 0 && names(users)[i]%in%names(users)[1:(i - 1)]) { #checks for any matching usernames in previous [count]
+            if(counter > 0 && names(users)[i]%in%names(users)[1:(i - 1)]) { #checks for any matching usernames in previous [counter]
               users[[i]] <- (users[names(users)[i]%in%names(users)[1:(i - 1)]])[[1]] #if successful, clones that information into this entry
             } else {
               users[[i]] <- user.info$getFollowerIDs() #otherwise, calls twitteR to get follower IDs
@@ -189,7 +189,7 @@ get.first.results <- function(search.string, quantity = 100) {
         names(users[[n]]) <- c("userID","date","followers") #names these sublists
       } #end of the "essentially done" if()
     } else { #this part is for when you don't have enough (unique) user IDs and have to loop through the code again
-      count <- (count + 1) #increases [count]
+      counter <- (counter + 1) #increases [counter]
       beginning <- (length(users) + 1) #bumps up the start point for the next iteration to save on unnecessary loops
     }
   }
