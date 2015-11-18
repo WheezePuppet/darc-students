@@ -31,11 +31,11 @@ induced.subgraph.up.to.time.t <- function(g, N, t){
 		followers <- c(followers, N$graph[[i]]$followers)
  		timestamp[i] <- N$attribute[[i]]$tweet.date
  	}
-  	followers <- unlist(followers)
+  	followers <- (unlist(followers))
   	vec <- c(tweeter, followers)
   
 	#Makes a subgraph
-	cooked.graph <- induced_subgraph(g, vec, impl=c("copy_and_delete"))
+	cooked.graph <- induced_subgraph(g, unique(vec), impl=c("copy_and_delete"))
 
   	#Timestamp of tweeter's tweets from the first tweeter up to and including the t'th tweeter
   	cooked.graph <- set_graph_attr(cooked.graph, "Time", timestamp)
