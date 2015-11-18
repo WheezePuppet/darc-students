@@ -79,7 +79,7 @@ friend.list <- NULL
 } #the end
 
 #this combines two similar vectors by finding the missing values and appending them in the correct places
-combine <- function(first,second) {
+combine <- function(first, second) {
   extra.num <- 0 #the length of [longer] changes, so this number anticipates that change for the for-loop
   if(length(first) < length(second)) { #figures out which vector is longer
     longer <- second
@@ -89,24 +89,29 @@ combine <- function(first,second) {
     shorter <- second
   }
   #if [shorter] is completely contained by [longer] then it returns the latter, otherwise it counts up the additional values from [shorter]
-  ifelse(setequal(longer,union(longer,shorter)),return(longer),extra <- union(longer,shorter)[(length(unique(longer))+1):length(union(longer,shorter))])
+  ifelse(setequal(longer,union(longer,shorter)), return(longer), extra <- union(longer,shorter)[(length(intersect(longer,shorter))+1):length(union(longer,shorter))])
   for(n in 1:length(extra)) { #it's all very confusing
-    extra.num <- (length(grep(extra[n],shorter)) + extra.num)
+    extra.num <- (length(grep(extra[n],longer)) + length(grep(extra[n],shorter)) + extra.num)
   }
   #and this part combines everything magically
   for(i in 1:(extra.num + length(longer))) {
-    if(longer[i] != shorter[i]) { #if they don't match
-      if(is.element(longer[i],shorter[i:length(shorter)])) { #is this value even in [shorter]?
-        allign <- grep(longer[i],shorter)[min(which(grep(longer[i],shorter)>i))]-1 #if so, find all the between values
-        longer <- append(longer,shorter[i:allign],after=(i-1)) #and add them to [longer]
-      } else if(is.element(shorter[i],longer[i:length(longer)])) { #or is the value in [longer]?
-        allign <- grep(shorter[i],longer)[min(which(grep(shorter[i],longer)>i))]-1
-        shorter <- append(shorter,longer[i:allign],after=(i-1)) #same thing as above, but vice-versa
-      } else if(i <= length(shorter)) { #as long as we haven't exceeded [shorter] and the value is only in one vector
-        longer <- append(longer,shorter[i],after=i) #adds it in to each
-        shorter <- append(shorter,longer[i],after=(i-1))
-      } else {
-        shorter <- c(shorter,longer[i:length(longer)]) #grabs all values hanging off the end of [longer] when we've reached the end of [shorter]
+  if(!setequal(longer,shorter)) { #the condition that they are not perfectly identical
+      if(length(longer) <= i || length(shorter) <= i) { #a condition to prevent looping beyond the length of the vector
+        if(longer[i] == shorter[i]) {
+          ifelse(length(longer) >= length(shorter), return(longer), return(shorter)) #returns the longer vector
+        }
+      }
+      if(longer[i] != shorter[i]) { #if they don't match
+        if(is.element(longer[i],shorter[i:length(shorter)])) { #is this value even in [shorter]?
+          allign <- grep(longer[i],shorter)[min(which(grep(longer[i],shorter)>i))]-1 #if so, find all the between values
+          longer <- append(longer,shorter[i:allign],after=(i-1)) #and add them to [longer]
+        } else if(is.element(shorter[i],longer[i:length(longer)])) { #or is the value in [longer]?
+          allign <- grep(shorter[i],longer)[min(which(grep(shorter[i],longer)>i))]-1
+          shorter <- append(shorter,longer[i:allign],after=(i-1)) #same thing as above, but vice-versa
+        } else { #and this is for if both elements aren't in the other vector
+          longer <- append(longer,shorter[i],after=i) #adds it in to each
+          shorter <- append(shorter,longer[i],after=(i-1))
+        }
       }
     }
   }
@@ -125,16 +130,17 @@ get.first.results <- function(search.string, quantity = 100) {
   tweet.dates <- c() #POSIX dates
   rem <- c() #vector of protected/404 users be removed
   while(length(unique(users)) < quantity) { #main loop
-    first <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",counter*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
-    first.usernames <- first$response$list$trackback_author_nick
-    first.dates <- first$response$list$trackback_date #calls manual API once…
-    second <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",counter*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
-    second.usernames <- second$response$list$trackback_author_nick
-    second.dates <- second$response$list$trackback_date #…and twice
-    #this collects usernames/dates and merges them with each [counter]
-    users <- c(users,as.list(combine(first.usernames,second.usernames)))
-    tweet.dates <- unique(c(tweet.dates,combine(first.dates,second.dates)))
-    #see [combine()] for details
+    first.call <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",counter*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
+    first.info <- first.call$response$list$trackback_date #calls manual API once…
+    names(first.info) <- first.call$response$list$trackback_author_nick
+    second.call <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",counter*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
+    second.dates <- second.call$response$list$trackback_date #…and twice
+    names(second.info) <- second.call$response$list$trackback_author_nick
+    #I just stuck the names onto the dates so I wouldn't have to short them twice
+    all.info <- combine(first.info,second.info) #this collects usernames/dates and merges them with each [counter]
+    tweet.dates <- c(tweet.dates,unname(all.info) #and now I take the dates off
+    users <- c(users,as.list(names(all.info)) #see [combine()] for details
+    
     if(beginning > length(unique(users))) {
       break() #breaks if our list of users doesn't increase
     } else {
