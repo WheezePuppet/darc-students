@@ -1,3 +1,32 @@
+
+# Note: for this to work, you MUST be on the following package versions:
+# 
+# - twitteR 1.1.8
+# - httr 0.6.1
+#
+# Youg can find out what version you're on by typing
+# library(help=packagename) and reading. To go to a specific version:
+#
+#  1) Either:
+#    a) Find the file named "packagename_version.tar.gz" 
+#    (e.g., "httr_0.6.1.tar.gz") in the "packageVersions" directory
+#    immediately below where you're now sitting, or:
+#    b) Download it yourself from CRAN:
+#       i) Go to https://cran.r-project.org/src/contrib/Archive/packagename/
+#       ii) Somehow use your browser to download the file
+#       "packagename_version.tar.gz" (e.g., "httr_0.6.1.tar.gz") to your
+#       machine. Note: your browser is likely to be overly helpful here
+#       (especially if you're on a Mac) and automatically unzip this file
+#       and/or unpackage its contents. You don't want that. You want the plain
+#       old file, whose name ends with ".tar.gz", on your disk somewhere.
+#       Period.
+#  2) cd to the directory that contains that .tar.gz file, and type:
+#
+#  $ R CMD INSTALL theNameOfThatFile.tar.gz
+#
+#  3) and hopefully it should work better now.
+
+
 #From Liv:
 library(httr)
 library(stringi)
