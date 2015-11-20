@@ -141,8 +141,8 @@ get.first.results <- function(search.string, quantity = 100) {
     print("Second call done") # I just stuck the names onto the dates so I wouldn't have to short them twice
     
     all.info <- combine(first.info,second.info) #t his collects usernames/dates and merges them every [counter]
-    tweet.dates <- c(tweet.dates,unname(all.info) # and now it take the dates off
-    users <- c(users,as.list(names(all.info)) # see the combine() function for details
+    tweet.dates <- c(tweet.dates,unname(all.info)) # and now it take the dates off
+    users <- c(users,as.list(names(all.info))) # see the combine() function for details
     print("Merged all the info")
     
     if(beginning > length(users)) {
