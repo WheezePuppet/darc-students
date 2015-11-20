@@ -23,7 +23,7 @@ exists.in.graph <- function(user.id, twitter.graph){
 #   several user IDs who tweeted a certain search string. n and search.string
 #   are ignored in this case. Otherwise, get.first.user.ids() will be called 
 #   (from Liv) live.
-get.N <- function(search.string, n=100, first.user.ids){
+get.everyone <- function(search.string, n=100, first.user.ids){
   #gets all user ids of the first n tweeters (from Liv)
   if (missing(first.user.ids)) {
     cat("Asking Liv for the first",n," tweeters of \"", search.string, "\"\n")
@@ -42,7 +42,6 @@ get.N <- function(search.string, n=100, first.user.ids){
     # preserving the order.)
     fol<-unique(user$followerIDs)
     everyone[[x]]<-list(tweeter=uids[x],followers=fol)
-    ####### WHERE DO I FIND TIMESTAMP IN THE CODE???
     attr[[x]]<-list(tweet.date=x)
   }
   new_everyone<-list(graph=everyone,attribute=attr)
@@ -133,11 +132,11 @@ convert.liv.to.aaron <- function(liv.ids) {
 # The first 10 pwners graph has 1 weak component.
 # Now isn't that interesting....
 #
-#get.N("pwn",10) -> pwners
-#make.medium.graph(pwners) -> pwners.graph
-#table(components(pwners.graph,mode="weak")$csize)
+# get.everyone("pwn",10) -> pwners
+# make.medium.graph(pwners) -> pwners.graph
+# table(components(pwners.graph,mode="weak")$csize)
 #
-# get.N("#AisMona",10) -> moners
+# get.everyone("#AisMona",10) -> moners
 # make.medium.graph(moners) -> moners.graph
 # table(components(moners.graph,mode="weak")$csize)
 
