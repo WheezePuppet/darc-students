@@ -151,7 +151,9 @@ combine <- function(first, second) {
 # okay, this will return a list, 100-long when unique'd by name, of the first hundred (repeated) user IDs
 # each entry in the list (named for the user ID) is its own list, the first element being $user, the second element being
 # $date (which I may need to format differently?), and the third being $followers (a vector of up to 25k follower IDs)
-get.first.results <- function(search.string, quantity=100, counter=1, beginning=1, tweet.dates=c(), users=list()) {
+# it's assumed you're using the correct [auth.name] value, but all this letter does is determine which key you use next
+get.first.results <- function(search.string, quantity=100, auth.name="L", tweet.dates=c(), users=list(), counter=1, beginning=1) {
+  auth.name <- str_to_upper(auth.name) # these are our OAuth keys, which this function cycles through
   search.string <- ifelse(grepl("#",search.string),paste0("23",substring(search.string,2)),search.string) # formats query
   rem <- c() # vector of protected/404 users be removed, which I like to keep as a global variable
   print("Starting…")
@@ -174,10 +176,10 @@ get.first.results <- function(search.string, quantity=100, counter=1, beginning=
       print("Oops")
       return(users) # ends if the list isn't getting any bigger
     } else {
-    print("We're still growing")
+    print(paste("Our list is now",length(users),"long"))
       names(users)[beginning:length(users)] <- users[beginning:length(users)] # names all entries in [users] after themselves
       if(length(rem) > 0) {
-        rem <- unique(rem) # gets rid of repeated usernames to be removed each [counter]
+        rem <- unique(rem) ->> rem # gets rid of repeated usernames to be removed each [counter]
         names(users[beginning:length(users)])[c(which(users[beginning:length(users)]%in%rem))] <- rep("~") # marks usernames to be removed
       } # basically, I use "~" to identify users we can't use
     }
@@ -191,14 +193,14 @@ get.first.results <- function(search.string, quantity=100, counter=1, beginning=
         }
         user.url <- curl_fetch_memory(paste0("twitter.com/",users[[i]]))
         if(user.url$status_code==404 || grepl("suspended",user.url$url)) { # checks for 404 (deleted/suspended user) error
-          rem <- c(rem,users[[i]]) # adds these names for later removal
+          rem <- c(rem,users[[i]]) ->> rem # adds these names for later removal
           names(users)[grep(names(users)[[i]],names(users))] <- rep("~") # marks all matching names with "~"
           print(paste(i,"gets ~"))
         } else {
           user.info <- getUser(users[[i]]) # calls twitteR to get user info
           print("Called twitteR")
           if(user.info$protected) { # same thing as above, but for protected users
-            rem <- c(rem,users[[i]])
+            rem <- c(rem,users[[i]]) ->> rem
             names(users)[grep(names(users)[[i]],names(users))] <- rep("~")
             print(paste(i,"gets ~"))
           } else { 
@@ -209,15 +211,31 @@ get.first.results <- function(search.string, quantity=100, counter=1, beginning=
             } else {
               print("Getting rate limit…")
               rate.limit <- getCurRateLimitInfo() # gets rate limit(s)
-              print(paste0(rate.limit[32,3],"/",rate.limit[32,2]))
-              if(0%in%rate.limit[,3]) { # if one of them hits 0…
+              print(paste0(rate.limit[32,3],"/",rate.limit[32,2])) # and prints remaining calls for getFollowerIDs
+              if(0%in%rate.limit[,3]) { # this checks that we haven't hit any rate limits
                 now <- as.POSIXct(Sys.time())
-                wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4]))
+                wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4])) # the maximum waiting interval
+                if((wait-now) <= 15) { # if we have to wait 15 min.…
+                  auth.name <- switch(auth.name, "H"="A", "A"="L", "L"="S", "S"="H") # …then it cycles through the other keys
+                  print(paste0("Switching to ",auth.name,"…"))
+                  auth.switcher(auth.name) # this calls a function with all the OAuth keys
+                  print("Getting rate limit again…") # see auth.switcher()
+                  rate.limit <- getCurRateLimitInfo() # checks again for the rate limit
+                  if(0%in%rate.limit[,3]) { #if we're still at 0…
+                    now <- as.POSIXct(Sys.time())
+                    wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4]))
+                    print(paste0("It's ",now," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
+                    print(wait-now)
+                    Sys.sleep(ifelse((wait-now) > 15,1,61)*(wait-now)) # then the system sleeps for about 15 min.
+                  } else {
+                    print(paste0(rate.limit[32,3],"/",rate.limit[32,2])) # this means that the new OAuth key isn't at the rate limit
+                  }
+                } else { # if the wait time is in seconds instead of minutes, we won't change OAuth key
                 print(paste0("It's ",now," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
-                print(wait-now) # …then it sleeps until the 15 minute interval ends
-                Sys.sleep(ifelse((wait-now) > 15,1,61)*(wait-now))
-              } # it takes a while, considering we want 100 of these things
-              users[[i]] <- user.info$getFollowerIDs() # otherwise, calls twitteR to get follower IDs
+                print(wait-now)
+                Sys.sleep(wait-now) # and we'll just wait it out
+              }
+              users[[i]] <- user.info$getFollowerIDs() # eventually calls twitteR to get follower IDs
               print(paste("Gave",length(users[[i]]),"followers to",i))
 
             } # and this next bit clones the follower ID vector onto any subsequent matching user ID entries
@@ -254,6 +272,37 @@ get.first.results <- function(search.string, quantity=100, counter=1, beginning=
       beginning <- (length(users) + 1) # bumps up the start point for the next iteration to save on unnecessary loops
     }
   }
-  return(users)
-} # it can take over 2 hours to complete this
-# orz
+  # here's where I usually assign a global variable and just return str(users) 'cause it's long
+  return(users) # this usually takes a bit over 30–45 minutes to complete
+} # and just ignore the rate limit error at the end as it doesn't seem to mean much
+
+# this makes get.first.results() almost 4x faster by using all out OAuth keys
+auth.switcher <- function(auth.name=auth.name) { # it's all global variables here
+  auth.name <- str_to_upper(auth.name) # doesn't matter what the case is
+  if(auth.name == "H") {
+    print("Using Hannah's keys…")
+    key <<- "mGwXg8u650fqEeTAM7T1jDqMX"
+    secret <<- "WOavl2fMDCL0QxFkEoYswy6FWTBDRLvaN8DtpUbbpKRCOtSDE1"
+    access_token <<- "394926716-dHC5EZtfYQI0fgno0Yitvx4doHuz8JicBNxFBg6z"
+    access_token_secret <<- "KncwptmZl0KUfWbebINwOFvc4bbR7q2O2ixs7F19DPrXY"
+  } else if(auth.name == "A") {
+    print("Using Aaron's keys…")
+    key <<- "QqNt2fPekjeu9jNzuyfIwxC2q"
+    secret <<- "pidb0hZR2WtJwo594KnKEc0w9KcYOzwtubjLDKdecbtxOXRsb1"
+    access_token <<- "551419186-TfWdgD0yNyipiWfVGx89rnwa8DOcUVGzQd1kd60d"
+    access_token_secret <<- "TTiEJxJRvix00VuI3yDgFcmJzxjEqjhayGuPINED4IYGU"
+  } else if(auth.name == "L") {
+    print("Using Liv's keys…")
+    key <<- "kzy13nReYwPakG1jflt2zPVUm"
+    secret <<- "7t5E77ZzURWMJkFHS1J9SdIDThWounX9DMiWXRpN61je86vjN8"
+    access_token <<- "3648031337-eefjrJKBbe7xqqpdXcQF9DLpxvpZYurRIJyiN9e"
+    access_token_secret <<- "D1doHvZKXPn0sqBGXiJNuNcpuJmN2Z7BzkFbbbZDGt8qH"
+  } else if(auth.name == "S") {
+    print("Using Stephen's keys…")
+    key <<- "MlUmay5kA1vGWKokmmFofgRLX"
+    secret <<- "2FFYCyI2rhUIEltkepeNhVcZvYufXJukCJMqE1s3ALKoLYm7LD"
+    access_token <<- "1019144197-cMFsHfxTZiG0oyOidzM7bCW4uX6PzjXVOyNQTUK"
+    access_token_secret <<- "fmW3KSw0kSYH43QPqSxUscnZD8XF8M8oEJnKm2sRAcq70"
+  } # I won't bother explaining everything here since it's pretty straightforward
+  setup_twitter_oauth(key,secret,access_token,access_token_secret)
+} # fin
