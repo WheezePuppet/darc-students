@@ -2,7 +2,7 @@
 
 library(igraph)
 
-#Computes the number of components in the graph
+#Returns the number of components for a list of graphs.
 num.components <- function(graph){
 	
 	#Was not sure which one we wanted.....So I did both
@@ -19,4 +19,24 @@ num.components <- function(graph){
 		num <- c(num, number)	
 	}
 	return (num)
+}
+
+
+
+#Returns the clustering coefficient for a list of graphs.
+#Value returned is from -1 to 1. The closer the value is to -1 or 1, the stronger the cluster. If there are no connected triples, returns NaN.
+cluster.coeff <- function(graph){
+	
+	#Was not sure which one we wanted.....So I did both
+
+	#Clustering Coefficient for one graph
+	#trans <- transitivity(graph, type="global")
+	
+	#Clustering Coefficients for a list of graphs	
+	trans <- c()
+	for (i in 1:length(graph)){
+		coefficients.of.graph <- transitivity(graph[[i]], type="global")
+		trans <- c(trans, coefficients.of.graph)
+	}
+	return (trans)
 }
