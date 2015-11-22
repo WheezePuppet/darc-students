@@ -35,7 +35,8 @@ library(curl)
 library(twitteR)
 source("twitterLogonInfo.R")
 source("manualApi.R") # now incorporating Stephen's API
-setup_twitter_oauth(key,secret,access_token,access_token_secret) # be sure to do this part once!
+##setup_twitter_oauth(key,secret,access_token,access_token_secret)
+# actually, use auth.switcher() instead of this so you only have ot do it once
 
 # Returns the (repeated) first [quantity] user IDs. Just unique() it if you only want the unrepeated IDs.
 # make sure to remember to add the ‘#’ symbol in search.string if you’re searching for a hashtag and not just a word.
@@ -101,8 +102,8 @@ get.user.info <- function(user) {
   user.info <- getUser(user) # uses twitteR to get the info
   user.id <- user.info$id # grabs the user ID out of said info
   follower.list <- user.info$getFollowerIDs() # and the follower IDs
-##friend.list <- c(user.info$getFriendIDs()) # you get the picture
-friend.list <- NULL
+  ##friend.list <- c(user.info$getFriendIDs()) # you get the picture
+  friend.list <- NULL
   user.info <- list(user.info,user.id,follower.list,friend.list) # a list of lists
   names(user.info) <- c("username","userID","followerIDs","friendIDs") # names lists for your convenience
   return(user.info)
@@ -149,10 +150,10 @@ combine <- function(first, second) {
 } # I don't think I've put this much brain power into something since I tried to visualize the 4th dimension
 
 # okay, this will return a list, 100-long when unique'd by name, of the first hundred (repeated) user IDs
-# each entry in the list (named for the user ID) is its own list, the first element being $user, the second element being
-# $date (which I may need to format differently?), and the third being $followers (a vector of up to 25k follower IDs)
-# it's assumed you're using the correct [auth.name] value, but all this letter does is determine which key you use next
-get.first.results <- function(search.string, quantity=100, auth.name="L", tweet.dates=c(), users=list(), counter=1, beginning=1) {
+# each entry in the list (named for the user ID) is its own list, with the first element, $user; the second element,
+# $date (which I may need to format differently?); and the third element, $followers, a vector of up to 25k follower IDs
+# it's assumed you're using the correct [auth.name] letter, but all this does is determine which key you use next
+get.first.results <- function(search.string, quantity=100, auth.name=auth.name, tweet.dates=c(), users=list(), counter=1, beginning=1) {
   auth.name <- str_to_upper(auth.name) # these are our OAuth keys, which this function cycles through
   search.string <- ifelse(grepl("#",search.string),paste0("23",substring(search.string,2)),search.string) # formats query
   rem <- c() # vector of protected/404 users be removed, which I like to keep as a global variable
@@ -221,20 +222,20 @@ get.first.results <- function(search.string, quantity=100, auth.name="L", tweet.
                   auth.switcher(auth.name) # this calls a function with all the OAuth keys
                   print("Getting rate limit again…") # see auth.switcher()
                   rate.limit <- getCurRateLimitInfo() # checks again for the rate limit
-                  if(0%in%rate.limit[,3]) { #if we're still at 0…
+                  if(0%in%rate.limit[,3]) { # if we're still at 0…
                     wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4]))
                     print(paste0("It's ",Sys.time()," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
-                    while(Sys.time() <= wait) {
-                      print(wait-Sys.time())
-                      Sys.sleep(200) # then the system sleeps for about 15 min.
-                    }
+                    print(wait-Sys.time())
+                    while(Sys.time() <= wait) { # …then the system sleeps for 30 sec. intervals
+                      Sys.sleep(ifelse(abs(wait-Sys.time()) < 15, 30, abs(wait-Sys.time())+2))
+                    } # this while() loop is better at preventing negative wait-times
                   } else {
                     print(paste0(rate.limit[32,3],"/",rate.limit[32,2])) # this means that the new OAuth key isn't at the rate limit
                   }
                 } else { # if the wait time is in seconds instead of minutes, we won't change OAuth key
                 print(paste0("It's ",now," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
                 print(wait-now)
-                Sys.sleep(abs(wait-now)) # and we'll just wait it out
+                Sys.sleep(abs(wait-now)+2) # and we'll just wait it out
               }
               users[[i]] <- user.info$getFollowerIDs() # eventually calls twitteR to get follower IDs
               print(paste("Gave",length(users[[i]]),"followers to",i))
@@ -253,10 +254,13 @@ get.first.results <- function(search.string, quantity=100, auth.name="L", tweet.
       tweet.dates <- tweet.dates[-which(names(users)=="~")] # removes the [tweet.dates] values matching those in [users]
       users <- users[-which(names(users)=="~")] # removes all users marked with "~"
     }
-    print(length(tweet.dates)==length(users)) # just checking
     
     if(length(unique(users)) >= quantity) { # this part only happens when you're essentially done
       print("Time for a trim?")
+      while(length(tweet.dates) > length(users)) { # unlikely to happen, but possible
+        print("Why is one list longer?")
+        tweet.dates <- tweet.dates[-length(tweet.dates)]
+      } # just checking
       while(length(unique(users)) > quantity) {
         users <- users[-length(users)] # trims the excess at the end so we only get 100 unique user IDs
         tweet.dates <- tweet.dates[-length(tweet.dates)] # the same for the dates
@@ -278,8 +282,8 @@ get.first.results <- function(search.string, quantity=100, auth.name="L", tweet.
 } # and just ignore the rate limit error at the end as it doesn't seem to mean much
 
 # this makes get.first.results() almost 4x faster by using all out OAuth keys
-auth.switcher <- function(auth.name=auth.name) { # it's all global variables here
-  auth.name <- str_to_upper(auth.name) # doesn't matter what the case is
+auth.switcher <- function(auth.name) { # it's all global variables here
+  auth.name <- str_to_upper(auth.name) ->> auth.name # doesn't matter what the case is
   if(auth.name == "H") {
     print("Using Hannah's keys…")
     key <<- "mGwXg8u650fqEeTAM7T1jDqMX"
@@ -306,4 +310,22 @@ auth.switcher <- function(auth.name=auth.name) { # it's all global variables her
     access_token_secret <<- "fmW3KSw0kSYH43QPqSxUscnZD8XF8M8oEJnKm2sRAcq70"
   } # I won't bother explaining everything here since it's pretty straightforward
   setup_twitter_oauth(key,secret,access_token,access_token_secret)
+} # easy stuff
+
+# this is mostly a debugger for the list created in get.first.results()
+# it lets you know that all your user IDs and friend IDs are unique with respect to each other
+check.uniqueness <- function(stuff) { # [stuff] is just my lazy term for our list of lists
+  for(i in 1:(length(stuff)-1)) {
+    for(n in (i+1):length(stuff)) {
+      if(setequal(stuff[[i]]$followers,stuff[[n]]$followers)) {
+        if(names(stuff[i]) != names(stuff[n])) {
+          print(paste(i,"and",n,"have the same friends, but not name"))
+        } # the print() statements pretty much tell you everything
+      } else if(names(stuff[i]) == names(stuff[n])){
+        if(!setequal(stuff[[i]]$followers,stuff[[n]]$followers)) {
+          print(paste(i,"has the same name, but doesn't have the same friends as",n))
+        }
+      }
+    }
+  }
 } # fin
