@@ -44,3 +44,8 @@ access_token_secret <- "D1doHvZKXPn0sqBGXiJNuNcpuJmN2Z7BzkFbbbZDGt8qH"
 #access_token <- "1019144197-cMFsHfxTZiG0oyOidzM7bCW4uX6PzjXVOyNQTUK"
 #access_token_secret <- "fmW3KSw0kSYH43QPqSxUscnZD8XF8M8oEJnKm2sRAcq70"
 
+# This is Dave:
+#key <- "j9ylpEcXdHxZLZnN5OzH9CbNE"
+#secret <- "VeYV8XXHbUCLk43iOWVOYB6ODzgwODwj0AFJOXANUGm36DKJYI"
+#access_token <- "703433868-5F8OLs2t2w8Xdkbr9LFbtreyNP4lo4faM4BDq8fY"
+#access_token_secret <- "cwsYGxS64oR6np5XeqwdG0p2u3rky6xDEpcRm13TtMAZN"
