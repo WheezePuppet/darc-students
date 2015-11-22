@@ -222,18 +222,19 @@ get.first.results <- function(search.string, quantity=100, auth.name="L", tweet.
                   print("Getting rate limit again…") # see auth.switcher()
                   rate.limit <- getCurRateLimitInfo() # checks again for the rate limit
                   if(0%in%rate.limit[,3]) { #if we're still at 0…
-                    now <- as.POSIXct(Sys.time())
                     wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4]))
-                    print(paste0("It's ",now," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
-                    print(wait-now)
-                    Sys.sleep(ifelse((wait-now) > 15,1,61)*(wait-now)) # then the system sleeps for about 15 min.
+                    print(paste0("It's ",Sys.time()," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
+                    while(Sys.time() <= wait) {
+                      print(wait-Sys.time())
+                      Sys.sleep(200) # then the system sleeps for about 15 min.
+                    }
                   } else {
                     print(paste0(rate.limit[32,3],"/",rate.limit[32,2])) # this means that the new OAuth key isn't at the rate limit
                   }
                 } else { # if the wait time is in seconds instead of minutes, we won't change OAuth key
                 print(paste0("It's ",now," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
                 print(wait-now)
-                Sys.sleep(wait-now) # and we'll just wait it out
+                Sys.sleep(abs(wait-now)) # and we'll just wait it out
               }
               users[[i]] <- user.info$getFollowerIDs() # eventually calls twitteR to get follower IDs
               print(paste("Gave",length(users[[i]]),"followers to",i))
