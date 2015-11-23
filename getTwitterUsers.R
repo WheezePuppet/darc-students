@@ -328,4 +328,5 @@ check.uniqueness <- function(stuff) { # [stuff] is just my lazy term for our lis
       }
     }
   }
+#do we need to return something here
 } # fin
