@@ -24,7 +24,7 @@ num.components <- function(graph){
 
 
 #Returns the clustering coefficient for a list of graphs.
-#Value returned is from -1 to 1. The closer the value is to -1 or 1, the stronger the cluster. If there are no connected triples, returns NaN.
+#Value returned is from 0 to 1. If there are no connected triples, returns NaN.
 cluster.coeff <- function(graph){
 	
 	#Was not sure which one we wanted.....So I did both
