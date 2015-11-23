@@ -5,7 +5,7 @@ induced.subgraph.at.time.t <- function(g, N, t){
 	tweeter <- N$graph[[t]]$tweeter
 	followers <- N$graph[[t]]$followers
 	timestamp <- N$attribute[[t]]$tweet.date
- 	vec<- c(pwners$graph[[t]]$tweeter, pwners$graph[[t]]$followers)
+ 	vec<- c(tweeter, followers)
 
 	#Makes a subgraph
 	raw.graph <- induced_subgraph(g, vec, impl=c("auto"))
