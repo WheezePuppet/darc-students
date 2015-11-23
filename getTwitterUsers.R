@@ -173,6 +173,16 @@ get.first.results <- function(search.string, quantity=100, auth.name=auth.name, 
     users <- c(users,as.list(names(all.info))) # see the combine() function for details
     print("Merged all the info")
     
+    if(length(unique(users)) < quantity) {
+      if(length(all.info) == 0) {
+        return(length(users))
+      } else {
+        counter <- (counter + 1) ->> counter
+        print("Not enough!")
+        next()
+      }
+    }
+    
     if(beginning > length(users)) {
       print("Oops")
       return(users) # ends if the list isn't getting any bigger
@@ -186,6 +196,9 @@ get.first.results <- function(search.string, quantity=100, auth.name=auth.name, 
     }
     
     for(i in beginning:length(users)) { # where most of the important stuff goes on
+    if(i > length(users)) {
+        break() # this actually happens somehow
+      }
       if(names(users)[i] != "~" && length(users[[i]]) <= 1) { # only looks at usernames that haven't been marked with "~"
         print(paste(i,"is unique"))
         if(length(users[[i]])==0) {
@@ -314,19 +327,24 @@ auth.switcher <- function(auth.name) { # it's all global variables here
 
 # this is mostly a debugger for the list created in get.first.results()
 # it lets you know that all your user IDs and friend IDs are unique with respect to each other
-check.uniqueness <- function(stuff) { # [stuff] is just my lazy term for our list of lists
+check.uniqueness <- function(stuff) {
   for(i in 1:(length(stuff)-1)) {
     for(n in (i+1):length(stuff)) {
       if(setequal(stuff[[i]]$followers,stuff[[n]]$followers)) {
+        ##print("These have the same followers")
         if(names(stuff[i]) != names(stuff[n])) {
-          print(paste(i,"and",n,"have the same friends, but not name"))
-        } # the print() statements pretty much tell you everything
+          print(paste(i,"and",n,"have the same friends"))
+        }
       } else if(names(stuff[i]) == names(stuff[n])){
+        ##print("These have the same names")
         if(!setequal(stuff[[i]]$followers,stuff[[n]]$followers)) {
-          print(paste(i,"has the same name, but doesn't have the same friends as",n))
+          print(paste(i,"doesn't have the same friends as",n))
         }
       }
     }
   }
-#do we need to return something here
 } # fin
+# Here, I pasted it exactly as I have it.
+# Hine works for me and doesn't freak about
+# about an unexpected end, so maybe there's
+# just a typo somewhere that I missed? idk
