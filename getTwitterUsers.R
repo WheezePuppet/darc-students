@@ -154,52 +154,40 @@ combine <- function(first, second) {
 # $date (which I may need to format differently?); and the third element, $followers, a vector of up to 25k follower IDs
 # it's assumed you're using the correct [auth.name] letter, but all this does is determine which key you use next
 
-get.first.results <- function(search.string, quantity=100, auth.name=auth.name, tweet.dates=c(), users=list(), counter=1, beginning=1) {
-
-  auth.name <- str_to_upper(auth.name) # these are our OAuth keys, which this function cycles through
-
+get.twitter.users <- get.first.results <- function(search.string, auth.name=auth.name, quantity=100, tweet.dates=c(), users=list(), counter=1, beginning=1) {
+  auth.name <- str_to_upper(substring(auth.name,1,1)) # these are our OAuth keys, which this function cycles through
   search.string <- ifelse(grepl("#",search.string),paste0("23",substring(search.string,2)),search.string) # formats query
-
   rem <- c() # vector of protected/404 users be removed, which I like to keep as a global variable
-
-  print("Starting…")
-
+  print(paste0("Starting with ",auth.name,"…")) # now outputs take up less room
   while(length(unique(users)) < quantity) { # main loop
-
     first.call <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",(counter-1)*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
     first.info <- first.call$response$list$trackback_date # calls manual API once…
     names(first.info) <- first.call$response$list$trackback_author_nick
-
-    print("First call done")
-
+    cat("First and")
     second.call <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",(counter-1)*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
-
     second.dates <- second.call$response$list$trackback_date # …and twice
-
     names(second.info) <- second.call$response$list$trackback_author_nick
-
-    print("Second call done") # I just stuck the names onto the dates so I wouldn't have to short them twice
+    cat(" second calls done\n") # I just stuck the names onto the dates so I wouldn't have to short them twice
     
     all.info <- combine(first.info,second.info) # this collects usernames/dates and merges them every [counter]
     tweet.dates <- c(tweet.dates,unname(all.info)) # and now it take the dates off
     users <- c(users,as.list(names(all.info))) # see the combine() function for details
-    print("Merged all the info")
+    cat("The list has been merged and")
     
-    if(length(unique(users)) < quantity) {
-      if(length(all.info) == 0) {
+    if(length(users) < quantity) {
+      if(length(all.info)==0) {
         return(length(users))
       } else {
         counter <- (counter + 1) ->> counter
-        print("Not enough!")
+        cat(" it isn't long enough!")
         next()
       }
     }
     
     if(beginning > length(users)) {
-      print("Oops")
+      cat(" it isn't getting any bigger!")
       return(users) # ends if the list isn't getting any bigger
     } else {
-    print(paste("Our list is now",length(users),"long"))
       names(users)[beginning:length(users)] <- users[beginning:length(users)] # names all entries in [users] after themselves
       if(length(rem) > 0) {
         rem <- unique(rem) ->> rem # gets rid of repeated usernames to be removed each [counter]
@@ -207,76 +195,92 @@ get.first.results <- function(search.string, quantity=100, auth.name=auth.name, 
       } # basically, I use "~" to identify users we can't use
     }
     
+    cat(" it's",length(users),"users long\n")
     for(i in beginning:length(users)) { # where most of the important stuff goes on
+        cat(i)
         if(i > length(users)) {
+            cat(" — I don't know how, but this user vanished\n")
             break() # this actually happens somehow
         }
         if(names(users)[i] != "~" && length(users[[i]]) <= 1) { # only looks at usernames that haven't been marked with "~"
-            print(paste(i,"is unique"))
             if(length(users[[i]])==0) {
                 users[[i]] <- names(users[i]) # this catches any list entries that have no sub-lists
-                    print(paste(i,"was empty"))
+                    cat(" was empty\n")
             }
             user.url <- curl_fetch_memory(paste0("twitter.com/",users[[i]]))
             if(user.url$status_code==404 || grepl("suspended",user.url$url)) { # checks for 404 (deleted/suspended user) error
                 rem <- c(rem,users[[i]]) ->> rem # adds these names for later removal
                 names(users)[grep(names(users)[[i]],names(users))] <- rep("~") # marks all matching names with "~"
-                print(paste(i,"gets ~"))
+                cat(" got \"~\"\n")
             } else {
                 user.info <- getUser(users[[i]]) # calls twitteR to get user info
-                print("Called twitteR")
+                cat(" called twitteR")
                 if(user.info$protected) { # same thing as above, but for protected users
                     rem <- c(rem,users[[i]]) ->> rem
                     names(users)[grep(names(users)[[i]],names(users))] <- rep("~")
-                    print(paste(i,"gets ~"))
+                    cat(" and got \"~\"\n")
                 } else {
                     names(users)[grep(names(users)[[i]],names(users))] <- rep(user.info$id) # converts all atching usernames to IDs
-                    print(paste("Renamed",i))
-                    if(counter > 1 && names(users)[i]%in%names(users)[1:(i - 1)]) { # checks for any matching usernames in previous [counter]
+                    cat(" and was renamed\n")
+                    if(beginning > 1 && names(users)[i]%in%names(users)[1:(i - 1)]) { # checks for any matching usernames in previous [counter]
                         users[[i]] <- users[[grep(names(users)[[i]],names(users))[[1]]]] # if successful, clones that information into this entry
                     } else {
-                        print("Getting rate limit…")
+                        cat("\nThe rate limit is ")
                         rate.limit <- getCurRateLimitInfo() # gets rate limit(s)
-                        print(paste0(rate.limit[32,3],"/",rate.limit[32,2])) # and prints remaining calls for getFollowerIDs
+                        cat(rate.limit[32,3],"/",rate.limit[32,2],"\n",sep="") # and prints remaining calls for getFollowerIDs
                         if(0%in%rate.limit[,3]) { # this checks that we haven't hit any rate limits
                             now <- as.POSIXct(Sys.time())
                             wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4])) # the maximum waiting interval
                             if((wait-now) <= 15) { # if we have to wait 15 min.…
-                                auth.name <- switch(auth.name, "H"="A", "A"="L", "L"="S", "S"="H") # …then it cycles through the other keys
-                                print(paste0("Switching to ",auth.name,"…"))
+                                cat("Switched from",auth.name)
+                                auth.name <- switch(auth.name, "M"="A", "A"="L", "L"="S", "S"="H", "H"=="M") # …then it cycles through the other keys
+                                cat(" to",auth.name,"\n")
                                 auth.switcher(auth.name) # this calls a function with all the OAuth keys
-                                print("Getting rate limit again…") # see auth.switcher()
+                                cat("\nThe rate limit is ") # see auth.switcher()
                                 rate.limit <- getCurRateLimitInfo() # checks again for the rate limit
                                 if(0%in%rate.limit[,3]) { # if we're still at 0…
+                                    cat(" still an issue")
                                     wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4]))
-                                    print(paste0("It's ",Sys.time()," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
+                                    cat("It's",strftime(Sys.time()),"and we have ")
+                                    cat(length(unique(names(users[1:i]))),"/",length(unique(names(users))),sep="")
+                                    cat(" unique users",ifelse("~"%in%names(users),"including \"~\"\n","\n"))
                                     print(wait-Sys.time())
-                                    while(Sys.time() <= wait) { # …then the system sleeps for 30 sec. intervals
-                                        Sys.sleep(ifelse(abs(wait-Sys.time()) < 15, 30, abs(wait-Sys.time())+2))
+                                    while(Sys.time() <= wait) { # …then the system sleeps for 15 sec. intervals
+                                        cat(".")
+                                        Sys.sleep(15)
                                     } # this while() loop is better at preventing negative wait-times
+                                    cat("\n")
                                 } else {
-                                    print(paste0(rate.limit[32,3],"/",rate.limit[32,2])) # this means that the new OAuth key isn't at the rate limit
+                                    cat(rate.limit[32,3],"/",rate.limit[32,2],"\n",sep="") # this means that the new OAuth key isn't at the rate limit
                                 }
                             } else { # if the wait time is in seconds instead of minutes, we won't change OAuth key
-                                print(paste0("It's ",now," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
+                                cat("It's",now,"and we have ")
+                                cat(length(unique(names(users[1:i]))),"/",length(unique(names(users))),sep="")
+                                cat(" unique users",ifelse("~"%in%names(users),"including \"~\"\n","\n"))                  
                                 print(wait-now)
-                                Sys.sleep(abs(wait-now)+2) # and we'll just wait it out
+                                Sys.sleep(abs(wait-now)+1) # and we'll just wait it out
                             }
+                            cat(i)
                             users[[i]] <- user.info$getFollowerIDs() # eventually calls twitteR to get follower IDs
-                            print(paste("Gave",length(users[[i]]),"followers to",i))
+                            cat(" got",length(users[[i]]),"followers\n")
 
                         } # and this next bit clones the follower ID vector onto any subsequent matching user ID entries
-                        users[i:length(users)] <- replace(users[i:length(users)],which(names(users[i:length(users)])==names(users)[i]),users[i])
-                        print("Cloned followers")
+                        repeats <- length(grep(names(users)[[i]],users[i:length(users)]))
+                        if(repeats > 1) {
+                            users[i:length(users)] <- replace(users[i:length(users)],which(names(users[i:length(users)])==names(users)[i]),users[i])
+                            cat("These were cloned",repeats-1,"times\n")
+                        }
                     }
                 }
             }
+        } else {
+          cat("…")
         }
     } # and so ends the for() loop that does most of the work
     print(paste("Try number",counter,"nearly done"))
 
     if("~"%in%names(users)) { # only does this if there's a user marked with "~"
-        print("Getting rid of ~")
+        cat("Getting rid of each \"~\"\n")
         tweet.dates <- tweet.dates[-which(names(users)=="~")] # removes the [tweet.dates] values matching those in [users]
         users <- users[-which(names(users)=="~")] # removes all users marked with "~"
     }
@@ -304,36 +308,46 @@ get.first.results <- function(search.string, quantity=100, auth.name=auth.name, 
     }
   }
 # here's where I usually assign a global variable and just return str(users) 'cause it's long
+  print(paste0("Finished with ",ifelse(grepl("23",search.string),paste0("#",substring(search.string,3)),search.string),"!"))
   return(users) # this usually takes a bit over 30–45 minutes to complete
 } # and just ignore the rate limit error at the end as it doesn't seem to mean much
 
 # this makes get.first.results() almost 4x faster by using all out OAuth keys
 auth.switcher <- function(auth.name) { # it's all global variables here
-  auth.name <- str_to_upper(auth.name) ->> auth.name # doesn't matter what the case is
-  if(auth.name == "H") {
-    print("Using Hannah's keys…")
-    key <<- "mGwXg8u650fqEeTAM7T1jDqMX"
-    secret <<- "WOavl2fMDCL0QxFkEoYswy6FWTBDRLvaN8DtpUbbpKRCOtSDE1"
-    access_token <<- "394926716-dHC5EZtfYQI0fgno0Yitvx4doHuz8JicBNxFBg6z"
-    access_token_secret <<- "KncwptmZl0KUfWbebINwOFvc4bbR7q2O2ixs7F19DPrXY"
-  } else if(auth.name == "A") {
-    print("Using Aaron's keys…")
-    key <<- "QqNt2fPekjeu9jNzuyfIwxC2q"
-    secret <<- "pidb0hZR2WtJwo594KnKEc0w9KcYOzwtubjLDKdecbtxOXRsb1"
-    access_token <<- "551419186-TfWdgD0yNyipiWfVGx89rnwa8DOcUVGzQd1kd60d"
-    access_token_secret <<- "TTiEJxJRvix00VuI3yDgFcmJzxjEqjhayGuPINED4IYGU"
-  } else if(auth.name == "L") {
-    print("Using Liv's keys…")
-    key <<- "kzy13nReYwPakG1jflt2zPVUm"
-    secret <<- "7t5E77ZzURWMJkFHS1J9SdIDThWounX9DMiWXRpN61je86vjN8"
-    access_token <<- "3648031337-eefjrJKBbe7xqqpdXcQF9DLpxvpZYurRIJyiN9e"
-    access_token_secret <<- "D1doHvZKXPn0sqBGXiJNuNcpuJmN2Z7BzkFbbbZDGt8qH"
-  } else if(auth.name == "S") {
-    print("Using Stephen's keys…")
+  auth.name <- str_to_upper(substring(auth.name,1,1)) ->> auth.name # doesn't matter what the case is
+  if(auth.name=="S") {
+    cat("Using Stephen's Keys…")
     key <<- "MlUmay5kA1vGWKokmmFofgRLX"
     secret <<- "2FFYCyI2rhUIEltkepeNhVcZvYufXJukCJMqE1s3ALKoLYm7LD"
     access_token <<- "1019144197-cMFsHfxTZiG0oyOidzM7bCW4uX6PzjXVOyNQTUK"
     access_token_secret <<- "fmW3KSw0kSYH43QPqSxUscnZD8XF8M8oEJnKm2sRAcq70"
+  } else if(auth.name=="M") { # my sister was kind enough to lend me her account
+    cat("Using Mac's keys…")
+    key <<- "QigOTWNTqIFssiV4j2JUFcnCa"
+    secret <<- "DN2Rb9wEfvPpF1urYDx9Kbkz1DpWpv4sx31114xmXbgnBZjCK2"
+    access_token <<- "1858572956-DePWBiDturoD2M3ogo3TNnzZEYv4YNd8IoCoGyo"
+    access_token_secret <<- "t0Avfz6sYifUug65UcBCDVRMfUzsOTPdjFQ8sMKbO724f"
+  } else if(auth.name=="L") {
+    cat("Using Liv's keys…")
+    key <<- "kzy13nReYwPakG1jflt2zPVUm"
+    secret <<- "7t5E77ZzURWMJkFHS1J9SdIDThWounX9DMiWXRpN61je86vjN8"
+    access_token <<- "3648031337-eefjrJKBbe7xqqpdXcQF9DLpxvpZYurRIJyiN9e"
+    access_token_secret <<- "D1doHvZKXPn0sqBGXiJNuNcpuJmN2Z7BzkFbbbZDGt8qH"
+  } else if(auth.name=="H") {
+    cat("Using Hannah's keys…")
+    key <<- "mGwXg8u650fqEeTAM7T1jDqMX"
+    secret <<- "WOavl2fMDCL0QxFkEoYswy6FWTBDRLvaN8DtpUbbpKRCOtSDE1"
+    access_token <<- "394926716-dHC5EZtfYQI0fgno0Yitvx4doHuz8JicBNxFBg6z"
+    access_token_secret <<- "KncwptmZl0KUfWbebINwOFvc4bbR7q2O2ixs7F19DPrXY"
+  } else if(auth.name=="A") {
+    cat("Using Aaron's keys…")
+    key <<- "QqNt2fPekjeu9jNzuyfIwxC2q"
+    secret <<- "pidb0hZR2WtJwo594KnKEc0w9KcYOzwtubjLDKdecbtxOXRsb1"
+    access_token <<- "551419186-TfWdgD0yNyipiWfVGx89rnwa8DOcUVGzQd1kd60d"
+    access_token_secret <<- "TTiEJxJRvix00VuI3yDgFcmJzxjEqjhayGuPINED4IYGU"
+  } else {
+    cat("ERROR: invalid input")
+    return(auth.name)
   } # I won't bother explaining everything here since it's pretty straightforward
   setup_twitter_oauth(key,secret,access_token,access_token_secret)
 } # easy stuff
@@ -356,8 +370,5 @@ check.uniqueness <- function(stuff) {
       }
     }
   }
+  cat("Finished!")
 } # fin
-# Here, I pasted it exactly as I have it.
-# Hine works for me and doesn't freak about
-# about an unexpected end, so maybe there's
-# just a typo somewhere that I missed? idk
