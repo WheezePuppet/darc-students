@@ -43,3 +43,15 @@ cluster.coeff <- function(graph){
 	}
 	return (trans)
 }
+
+#Returns the diameter for each graph in a list.
+graph.diameter<- function(graphs){
+	
+	diam <- c()
+	for (i in 1:length(graphs)){
+		#Do we want unconnected to equal true or false?
+		diam.of.graph <- diameter(graphs[[i]], directed=TRUE, unconnected=FALSE)
+		diam <- c(diam, diam.of.graph) 
+	}
+	return (diam)
+}
