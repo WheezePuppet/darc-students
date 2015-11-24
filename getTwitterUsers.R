@@ -153,19 +153,31 @@ combine <- function(first, second) {
 # each entry in the list (named for the user ID) is its own list, with the first element, $user; the second element,
 # $date (which I may need to format differently?); and the third element, $followers, a vector of up to 25k follower IDs
 # it's assumed you're using the correct [auth.name] letter, but all this does is determine which key you use next
+
 get.first.results <- function(search.string, quantity=100, auth.name=auth.name, tweet.dates=c(), users=list(), counter=1, beginning=1) {
+
   auth.name <- str_to_upper(auth.name) # these are our OAuth keys, which this function cycles through
+
   search.string <- ifelse(grepl("#",search.string),paste0("23",substring(search.string,2)),search.string) # formats query
+
   rem <- c() # vector of protected/404 users be removed, which I like to keep as a global variable
+
   print("Starting…")
+
   while(length(unique(users)) < quantity) { # main loop
+
     first.call <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",(counter-1)*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
     first.info <- first.call$response$list$trackback_date # calls manual API once…
     names(first.info) <- first.call$response$list$trackback_author_nick
+
     print("First call done")
+
     second.call <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",(counter-1)*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
+
     second.dates <- second.call$response$list$trackback_date # …and twice
+
     names(second.info) <- second.call$response$list$trackback_author_nick
+
     print("Second call done") # I just stuck the names onto the dates so I wouldn't have to short them twice
     
     all.info <- combine(first.info,second.info) # this collects usernames/dates and merges them every [counter]
@@ -196,101 +208,102 @@ get.first.results <- function(search.string, quantity=100, auth.name=auth.name, 
     }
     
     for(i in beginning:length(users)) { # where most of the important stuff goes on
-    if(i > length(users)) {
-        break() # this actually happens somehow
-      }
-      if(names(users)[i] != "~" && length(users[[i]]) <= 1) { # only looks at usernames that haven't been marked with "~"
-        print(paste(i,"is unique"))
-        if(length(users[[i]])==0) {
-          users[[i]] <- names(users[i]) # this catches any list entries that have no sub-lists
-          print(paste(i,"was empty"))
+        if(i > length(users)) {
+            break() # this actually happens somehow
         }
-        user.url <- curl_fetch_memory(paste0("twitter.com/",users[[i]]))
-        if(user.url$status_code==404 || grepl("suspended",user.url$url)) { # checks for 404 (deleted/suspended user) error
-          rem <- c(rem,users[[i]]) ->> rem # adds these names for later removal
-          names(users)[grep(names(users)[[i]],names(users))] <- rep("~") # marks all matching names with "~"
-          print(paste(i,"gets ~"))
-        } else {
-          user.info <- getUser(users[[i]]) # calls twitteR to get user info
-          print("Called twitteR")
-          if(user.info$protected) { # same thing as above, but for protected users
-            rem <- c(rem,users[[i]]) ->> rem
-            names(users)[grep(names(users)[[i]],names(users))] <- rep("~")
-            print(paste(i,"gets ~"))
-          } else { 
-            names(users)[grep(names(users)[[i]],names(users))] <- rep(user.info$id) # converts all atching usernames to IDs
-            print(paste("Renamed",i))
-            if(counter > 1 && names(users)[i]%in%names(users)[1:(i - 1)]) { # checks for any matching usernames in previous [counter]
-              users[[i]] <- users[[grep(names(users)[[i]],names(users))[[1]]]] # if successful, clones that information into this entry
+        if(names(users)[i] != "~" && length(users[[i]]) <= 1) { # only looks at usernames that haven't been marked with "~"
+            print(paste(i,"is unique"))
+            if(length(users[[i]])==0) {
+                users[[i]] <- names(users[i]) # this catches any list entries that have no sub-lists
+                    print(paste(i,"was empty"))
+            }
+            user.url <- curl_fetch_memory(paste0("twitter.com/",users[[i]]))
+            if(user.url$status_code==404 || grepl("suspended",user.url$url)) { # checks for 404 (deleted/suspended user) error
+                rem <- c(rem,users[[i]]) ->> rem # adds these names for later removal
+                names(users)[grep(names(users)[[i]],names(users))] <- rep("~") # marks all matching names with "~"
+                print(paste(i,"gets ~"))
             } else {
-              print("Getting rate limit…")
-              rate.limit <- getCurRateLimitInfo() # gets rate limit(s)
-              print(paste0(rate.limit[32,3],"/",rate.limit[32,2])) # and prints remaining calls for getFollowerIDs
-              if(0%in%rate.limit[,3]) { # this checks that we haven't hit any rate limits
-                now <- as.POSIXct(Sys.time())
-                wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4])) # the maximum waiting interval
-                if((wait-now) <= 15) { # if we have to wait 15 min.…
-                  auth.name <- switch(auth.name, "H"="A", "A"="L", "L"="S", "S"="H") # …then it cycles through the other keys
-                  print(paste0("Switching to ",auth.name,"…"))
-                  auth.switcher(auth.name) # this calls a function with all the OAuth keys
-                  print("Getting rate limit again…") # see auth.switcher()
-                  rate.limit <- getCurRateLimitInfo() # checks again for the rate limit
-                  if(0%in%rate.limit[,3]) { # if we're still at 0…
-                    wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4]))
-                    print(paste0("It's ",Sys.time()," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
-                    print(wait-Sys.time())
-                    while(Sys.time() <= wait) { # …then the system sleeps for 30 sec. intervals
-                      Sys.sleep(ifelse(abs(wait-Sys.time()) < 15, 30, abs(wait-Sys.time())+2))
-                    } # this while() loop is better at preventing negative wait-times
-                  } else {
-                    print(paste0(rate.limit[32,3],"/",rate.limit[32,2])) # this means that the new OAuth key isn't at the rate limit
-                  }
-                } else { # if the wait time is in seconds instead of minutes, we won't change OAuth key
-                print(paste0("It's ",now," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
-                print(wait-now)
-                Sys.sleep(abs(wait-now)+2) # and we'll just wait it out
-              }
-              users[[i]] <- user.info$getFollowerIDs() # eventually calls twitteR to get follower IDs
-              print(paste("Gave",length(users[[i]]),"followers to",i))
+                user.info <- getUser(users[[i]]) # calls twitteR to get user info
+                print("Called twitteR")
+                if(user.info$protected) { # same thing as above, but for protected users
+                    rem <- c(rem,users[[i]]) ->> rem
+                    names(users)[grep(names(users)[[i]],names(users))] <- rep("~")
+                    print(paste(i,"gets ~"))
+                } else {
+                    names(users)[grep(names(users)[[i]],names(users))] <- rep(user.info$id) # converts all atching usernames to IDs
+                    print(paste("Renamed",i))
+                    if(counter > 1 && names(users)[i]%in%names(users)[1:(i - 1)]) { # checks for any matching usernames in previous [counter]
+                        users[[i]] <- users[[grep(names(users)[[i]],names(users))[[1]]]] # if successful, clones that information into this entry
+                    } else {
+                        print("Getting rate limit…")
+                        rate.limit <- getCurRateLimitInfo() # gets rate limit(s)
+                        print(paste0(rate.limit[32,3],"/",rate.limit[32,2])) # and prints remaining calls for getFollowerIDs
+                        if(0%in%rate.limit[,3]) { # this checks that we haven't hit any rate limits
+                            now <- as.POSIXct(Sys.time())
+                            wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4])) # the maximum waiting interval
+                            if((wait-now) <= 15) { # if we have to wait 15 min.…
+                                auth.name <- switch(auth.name, "H"="A", "A"="L", "L"="S", "S"="H") # …then it cycles through the other keys
+                                print(paste0("Switching to ",auth.name,"…"))
+                                auth.switcher(auth.name) # this calls a function with all the OAuth keys
+                                print("Getting rate limit again…") # see auth.switcher()
+                                rate.limit <- getCurRateLimitInfo() # checks again for the rate limit
+                                if(0%in%rate.limit[,3]) { # if we're still at 0…
+                                    wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4]))
+                                    print(paste0("It's ",Sys.time()," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
+                                    print(wait-Sys.time())
+                                    while(Sys.time() <= wait) { # …then the system sleeps for 30 sec. intervals
+                                        Sys.sleep(ifelse(abs(wait-Sys.time()) < 15, 30, abs(wait-Sys.time())+2))
+                                    } # this while() loop is better at preventing negative wait-times
+                                } else {
+                                    print(paste0(rate.limit[32,3],"/",rate.limit[32,2])) # this means that the new OAuth key isn't at the rate limit
+                                }
+                            } else { # if the wait time is in seconds instead of minutes, we won't change OAuth key
+                                print(paste0("It's ",now," and we have ",length(unique(names(users[1:i]))),"/",length(unique(names(users)))," unique users"))
+                                print(wait-now)
+                                Sys.sleep(abs(wait-now)+2) # and we'll just wait it out
+                            }
+                            users[[i]] <- user.info$getFollowerIDs() # eventually calls twitteR to get follower IDs
+                            print(paste("Gave",length(users[[i]]),"followers to",i))
 
-            } # and this next bit clones the follower ID vector onto any subsequent matching user ID entries
-            users[i:length(users)] <- replace(users[i:length(users)],which(names(users[i:length(users)])==names(users)[i]),users[i])
-            print("Cloned followers")
-          }
+                        } # and this next bit clones the follower ID vector onto any subsequent matching user ID entries
+                        users[i:length(users)] <- replace(users[i:length(users)],which(names(users[i:length(users)])==names(users)[i]),users[i])
+                        print("Cloned followers")
+                    }
+                }
+            }
         }
-      }
     } # and so ends the for() loop that does most of the work
     print(paste("Try number",counter,"nearly done"))
-    
+
     if("~"%in%names(users)) { # only does this if there's a user marked with "~"
-      print("Getting rid of ~")
-      tweet.dates <- tweet.dates[-which(names(users)=="~")] # removes the [tweet.dates] values matching those in [users]
-      users <- users[-which(names(users)=="~")] # removes all users marked with "~"
+        print("Getting rid of ~")
+        tweet.dates <- tweet.dates[-which(names(users)=="~")] # removes the [tweet.dates] values matching those in [users]
+        users <- users[-which(names(users)=="~")] # removes all users marked with "~"
     }
-    
+
     if(length(unique(users)) >= quantity) { # this part only happens when you're essentially done
-      print("Time for a trim?")
-      while(length(tweet.dates) > length(users)) { # unlikely to happen, but possible
-        print("Why is one list longer?")
-        tweet.dates <- tweet.dates[-length(tweet.dates)]
-      } # just checking
-      while(length(unique(users)) > quantity) {
-        users <- users[-length(users)] # trims the excess at the end so we only get 100 unique user IDs
-        tweet.dates <- tweet.dates[-length(tweet.dates)] # the same for the dates
-      }
-      tweet.dates <- as.POSIXct(tweet.dates,origin="1970-01-01",tz="GMT") # converts the date to be readable
-      print("Merging the IDs & dates") # I may need to tweak this slightly?
-      for(n in 1:length(users)){ # final formatting
-        users[[n]] <-  list(names(users)[[n]],tweet.dates[n],users[[n]]) # upgrades [users] from list of vectors, to list of lists
-        names(users[[n]]) <- c("userID","date","followers") # names these sublists
-      } # end of the "essentially done" if()
+        print("Time for a trim?")
+        while(length(tweet.dates) > length(users)) { # unlikely to happen, but possible
+            print("Why is one list longer?")
+            tweet.dates <- tweet.dates[-length(tweet.dates)]
+        } # just checking
+        while(length(unique(users)) > quantity) {
+            users <- users[-length(users)] # trims the excess at the end so we only get 100 unique user IDs
+            tweet.dates <- tweet.dates[-length(tweet.dates)] # the same for the dates
+        }
+        tweet.dates <- as.POSIXct(tweet.dates,origin="1970-01-01",tz="GMT") # converts the date to be readable
+        print("Merging the IDs & dates") # I may need to tweak this slightly?
+        for(n in 1:length(users)){ # final formatting
+            users[[n]] <-  list(names(users)[[n]],tweet.dates[n],users[[n]]) # upgrades [users] from list of vectors, to list of lists
+            names(users[[n]]) <- c("userID","date","followers") # names these sublists
+        } # end of the "essentially done" if()
     } else { # this part is for when you don't have enough (unique) user IDs and have to loop through the code again
-      print("And again!")
-      counter <- (counter + 1) # increases [counter]
-      beginning <- (length(users) + 1) # bumps up the start point for the next iteration to save on unnecessary loops
+        print("And again!")
+        counter <- (counter + 1) # increases [counter]
+        beginning <- (length(users) + 1) # bumps up the start point for the next iteration to save on unnecessary loops
     }
   }
-  # here's where I usually assign a global variable and just return str(users) 'cause it's long
+# here's where I usually assign a global variable and just return str(users) 'cause it's long
   return(users) # this usually takes a bit over 30–45 minutes to complete
 } # and just ignore the rate limit error at the end as it doesn't seem to mean much
 
