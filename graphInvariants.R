@@ -38,20 +38,27 @@ cluster.coeff <- function(graph){
 	#Clustering Coefficients for a list of graphs	
 	trans <- c()
 	for (i in 1:length(graph)){
-		coefficients.of.graph <- transitivity(graph[[i]], type="global")
-		trans <- c(trans, coefficients.of.graph)
+		if(!is.connected(graph[[i]])){
+			trans <- c(trans, Inf)
+		}else{
+			coefficients.of.graph <- transitivity(graph[[i]], type="global")
+			trans <- c(trans, coefficients.of.graph)
+		}
 	}
 	return (trans)
 }
 
 #Returns the diameter for each graph in a list.
-graph.diameter<- function(graphs){
-	
+graph.diameter<- function(graphs, dir=FALSE){
 	diam <- c()
 	for (i in 1:length(graphs)){
-		#Do we want unconnected to equal true or false?
-		diam.of.graph <- diameter(graphs[[i]], directed=TRUE, unconnected=FALSE)
-		diam <- c(diam, diam.of.graph) 
+		if(dir==TRUE){
+			diam.of.graph <- diameter(graphs[[i]], directed=TRUE, unconnected=FALSE)
+			diam <- c(diam, diam.of.graph) 
+		}else{
+			diam.of.graph <- diameter(graphs[[i]], directed=FALSE, unconnected=FALSE)
+			diam <- c(diam, diam.of.graph) 
+		}
 	}
 	return (diam)
 }
