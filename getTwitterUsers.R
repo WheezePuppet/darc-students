@@ -233,8 +233,8 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
                             wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4])) # the maximum waiting interval
                             if((wait-now) <= 15) { # if we have to wait 15 min.…
                                 cat("Switched from",auth.name)
-                                auth.name <- switch(auth.name, "M"="A", "A"="L", "L"="S", "S"="H", "H"=="M") # …then it cycles through the other keys
-                                cat(" to",auth.name,"\n")
+                                auth.name <- switch(auth.name, "S"="H", "H"="E", "E"="L", "L"=="M", "H"=="A", "A"=="S") # …then it cycles through the other keys
+                                cat(" to",auth.name,"\n") # I nicknamed it "Shelma" this time
                                 auth.switcher(auth.name) # this calls a function with all the OAuth keys
                                 cat("\nThe rate limit is ") # see auth.switcher()
                                 rate.limit <- getCurRateLimitInfo() # checks again for the rate limit
@@ -307,40 +307,46 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
         beginning <- (length(users) + 1) # bumps up the start point for the next iteration to save on unnecessary loops
     }
   }
-# here's where I usually assign a global variable and just return str(users) 'cause it's long
+# here's where I usually assign a global variable and just return str(users) or unique(names(users)) 'cause it's long
   print(paste0("Finished with ",ifelse(grepl("23",search.string),paste0("#",substring(search.string,3)),search.string),"!"))
   return(users) # this usually takes a bit over 30–45 minutes to complete
 } # and just ignore the rate limit error at the end as it doesn't seem to mean much
 
-# this makes get.first.results() almost 4x faster by using all out OAuth keys
+# this makes get.first.results() almost 6x faster by using all out OAuth keys
 auth.switcher <- function(auth.name) { # it's all global variables here
   auth.name <- str_to_upper(substring(auth.name,1,1)) ->> auth.name # doesn't matter what the case is
   if(auth.name=="S") {
-    cat("Using Stephen's Keys…")
+    cat("Using Stephen's keys")
     key <<- "MlUmay5kA1vGWKokmmFofgRLX"
     secret <<- "2FFYCyI2rhUIEltkepeNhVcZvYufXJukCJMqE1s3ALKoLYm7LD"
     access_token <<- "1019144197-cMFsHfxTZiG0oyOidzM7bCW4uX6PzjXVOyNQTUK"
     access_token_secret <<- "fmW3KSw0kSYH43QPqSxUscnZD8XF8M8oEJnKm2sRAcq70"
   } else if(auth.name=="M") { # my sister was kind enough to lend me her account
-    cat("Using Mac's keys…")
+    cat("Using Mac's keys")
     key <<- "QigOTWNTqIFssiV4j2JUFcnCa"
     secret <<- "DN2Rb9wEfvPpF1urYDx9Kbkz1DpWpv4sx31114xmXbgnBZjCK2"
     access_token <<- "1858572956-DePWBiDturoD2M3ogo3TNnzZEYv4YNd8IoCoGyo"
     access_token_secret <<- "t0Avfz6sYifUug65UcBCDVRMfUzsOTPdjFQ8sMKbO724f"
   } else if(auth.name=="L") {
-    cat("Using Liv's keys…")
+    cat("Using Liv's keys")
     key <<- "kzy13nReYwPakG1jflt2zPVUm"
     secret <<- "7t5E77ZzURWMJkFHS1J9SdIDThWounX9DMiWXRpN61je86vjN8"
     access_token <<- "3648031337-eefjrJKBbe7xqqpdXcQF9DLpxvpZYurRIJyiN9e"
     access_token_secret <<- "D1doHvZKXPn0sqBGXiJNuNcpuJmN2Z7BzkFbbbZDGt8qH"
   } else if(auth.name=="H") {
-    cat("Using Hannah's keys…")
+    cat("Using Hannah's keys")
     key <<- "mGwXg8u650fqEeTAM7T1jDqMX"
     secret <<- "WOavl2fMDCL0QxFkEoYswy6FWTBDRLvaN8DtpUbbpKRCOtSDE1"
     access_token <<- "394926716-dHC5EZtfYQI0fgno0Yitvx4doHuz8JicBNxFBg6z"
     access_token_secret <<- "KncwptmZl0KUfWbebINwOFvc4bbR7q2O2ixs7F19DPrXY"
+  } else if(auth.name=="E") { # and I got my mom to dig up her old twitter password
+    cat("Using Elizabeth's keys")
+    key <<- "7UPP7RJ1ibGZTy37XvsnOv4NG"
+    secret <<- "0MsumBvRMbJIMvDZ4FNFP4frNbtbj04B0UayF9h9tOq95dyMUp"
+    access_token <<- "2314938964-p9OtupBp822HMBVy1ldhELLwOBpYzB2D2hJu6ap"
+    access_token_secret <<- "ajXB4xvzhu869glIQlsz328KiadSIMoFwjGAlA5MpgR7r"
   } else if(auth.name=="A") {
-    cat("Using Aaron's keys…")
+    cat("Using Aaron's keys")
     key <<- "QqNt2fPekjeu9jNzuyfIwxC2q"
     secret <<- "pidb0hZR2WtJwo594KnKEc0w9KcYOzwtubjLDKdecbtxOXRsb1"
     access_token <<- "551419186-TfWdgD0yNyipiWfVGx89rnwa8DOcUVGzQd1kd60d"
@@ -349,6 +355,7 @@ auth.switcher <- function(auth.name) { # it's all global variables here
     cat("ERROR: invalid input")
     return(auth.name)
   } # I won't bother explaining everything here since it's pretty straightforward
+  cat("…\n")
   setup_twitter_oauth(key,secret,access_token,access_token_secret)
 } # easy stuff
 
