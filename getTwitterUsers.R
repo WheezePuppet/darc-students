@@ -233,7 +233,7 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
                             wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4])) # the maximum waiting interval
                             if((wait-now) <= 15) { # if we have to wait 15 min.…
                                 cat("Switched from",auth.name)
-                                auth.name <- switch(auth.name, "S"="H", "H"="E", "E"="L", "L"=="M", "H"=="A", "A"=="S") # …then it cycles through the other keys
+                                auth.name <- switch(auth.name, "S"="H", "H"="E", "E"="L", "L"="M", "H"="A", "A"="S") # …then it cycles through the other keys
                                 cat(" to",auth.name,"\n") # I nicknamed it "Shelma" this time
                                 auth.switcher(auth.name) # this calls a function with all the OAuth keys
                                 cat("\nThe rate limit is ") # see auth.switcher()
