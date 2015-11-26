@@ -30,8 +30,6 @@ num.components <- function(graph){
 
 cluster.coeff <- function(graph){
 	
-	#Global or local??
-
 	#Clustering Coefficient for one graph
 	#trans <- transitivity(graph, type="global")
 	
