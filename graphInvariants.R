@@ -6,8 +6,6 @@ library(igraph)
 
 num.components <- function(graph){
 	
-	#Was not sure which one we wanted.....So I did both
-	
 	#Components of one graph
 	#components.of.graph <- components(graph, mode="weak")
 	#num <- components.of.graph$no
@@ -28,7 +26,10 @@ num.components <- function(graph){
 #The global cluster coefficient is the number of closed triplets (or 3 x triangles) over the total number of triplets (both open and closed)
 #Returns a value from 0(meaning no vertex that is connected to Vi connects to any other vertex that is connected to Vi) to 1(meaning every neighbor connected to Vi is also connected to every other vertex within the negihborhood). If there are no connected triples, returns NaN.
 
-cluster.coeff <- function(graph){
+#Takes two arguments: 1) a list of graphs 2)FALSE:if you want a coefficient of the entire graph(global), TRUE: if you want the mean of the coefficients of all the local triangles(local)
+#Default does global
+
+cluster.coeff <- function(graph, local=FALSE){
 	
 	#Clustering Coefficient for one graph
 	#trans <- transitivity(graph, type="global")
@@ -39,14 +40,25 @@ cluster.coeff <- function(graph){
 		if(!is.connected(graph[[i]])){
 			trans <- c(trans, Inf)
 		}else{
-			coefficients.of.graph <- transitivity(graph[[i]], type="global")
-			trans <- c(trans, coefficients.of.graph)
+			if(local==FALSE){
+				coefficients.of.graph <- transitivity(graph[[i]], type="global")
+				trans <- c(trans, coefficients.of.graph)
+
+			}else{
+				#Removes NaN values
+				coefficients.of.graph <- transitivity(graph[[i]], type="local")
+				coefficients.of.graph <- coefficients.of.graph[!coefficients.of.graph %in% NaN]
+				b <- mean(coefficients.of.graph)
+				trans <- c(trans, b)
+			}
 		}
 	}
 	return (trans)
 }
 
 #Returns the diameter for each graph in a list.
+
+#Default does directed=FALSE
 graph.diameter<- function(graphs, dir=FALSE){
 	diam <- c()
 	for (i in 1:length(graphs)){
