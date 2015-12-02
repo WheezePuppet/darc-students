@@ -2,6 +2,8 @@
 
 library(igraph)
 
+source("inducedsubgraphs.R")
+
 #Returns the number of components for a list of graphs.
 
 num.components <- function(graph){
@@ -116,16 +118,19 @@ outside.tweeter <- function(graphs, list.of.N){
 	for (i in 1:length(graphs)){
 		tweeters.vec <- c()
 		curr.graph <- graphs[[i]]
-		N <- list.of.N[i]
+		N <- list.of.N[[i]]
 		#because we've only asked for up to 10, will change to 100
-		for (i in 1:10){
-			tweeters <- N[[1]]$graph[[i]]$tweeter
+		for (i in 1:length(N$graph)){
+			tweeters <- N$graph[[i]]$tweeter
 			tweeters.vec <- c(tweeters.vec,tweeters)
 		}
 		#The first tweeter is NA
 		outside <- c(NA)
+        #subgraph == first graph
 		for (i in 2:length(tweeters.vec)){
-			subgraph <- induced.subgraph.up.to.time.t(curr.graph,N, i-1)
+			#if (i>1)
+                 #subgraph <- add.to.graph.thing(subgraph,N$graph[[i]],N$attribute[[i]])
+            subgraph <- induced.subgraph.up.to.time.t(curr.graph,N,i-1)
 			x <- toString(tweeters.vec[[i]])
 			result <- exists.in.graph(x, subgraph)
 			if (result){
