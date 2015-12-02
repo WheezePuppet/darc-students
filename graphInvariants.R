@@ -108,23 +108,33 @@ graph.diameter<- function(graphs, dir=FALSE){
 	return (diam)
 }
 
-#can we have a list of N?
-outside.tweeter <- function(graphs){
-	outside <- c()
+#If tweeter t is in the subgraph of 1:t-1, value is 0. If not, value is 1.
+
+#Need to pass in a list of graphs and a list of their N(everyone) values
+outside.tweeter <- function(graphs, list.of.N){
+	list.of.vecs <- list()
 	for (i in 1:length(graphs)){
-		#if tweeter t  was not present in any of the graphs 1 to t-1
-#for each tweeter, make induced subgraphs for 1:t-1 and see if tweeter t exists in that graph
-		#get N somehow
-		tweeter <- N$graph$tweeter
-		for ( ){
-			tweeter <- 
-			result <- exists.in.graph(tweeter, graphs[[i]])
+		tweeters.vec <- c()
+		curr.graph <- graphs[[i]]
+		N <- list.of.N[i]
+		#because we've only asked for up to 10, will change to 100
+		for (i in 1:10){
+			tweeters <- N[[1]]$graph[[i]]$tweeter
+			tweeters.vec <- c(tweeters.vec,tweeters)
+		}
+		#The first tweeter is NA
+		outside <- c(NA)
+		for (i in 2:length(tweeters.vec)){
+			subgraph <- induced.subgraph.up.to.time.t(curr.graph,N, i-1)
+			x <- toString(tweeters.vec[[i]])
+			result <- exists.in.graph(x, subgraph)
 			if (result){
 				outside <- c(outside, 0L)
 			}else{
 				outside <- c(outside, 1L)
 			}
 		}
+	list.of.vecs <- list(list.of.vecs, outside)
 	}
-	return (outside)
+	return (list.of.vecs)
 }

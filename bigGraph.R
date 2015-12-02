@@ -5,13 +5,12 @@ library(igraph)
 
 #The Vertex attributes must have a $name
 exists.in.graph <- function(user.id, twitter.graph){
-  for(x in 1:length(V(twitter.graph))){
-    answer=FALSE
-    if(user.id==V(twitter.graph)$name[x]){
-      return(TRUE)
-      }
-  }
-  return(FALSE)
+	for(x in 1:length(V(twitter.graph))){
+    		if(user.id==V(twitter.graph)$name[x]){
+      			return(TRUE)
+		}
+	}
+	return(FALSE)
 }
 
 # Returns a list with 2 elements, one of which is graph and one is attributes
@@ -136,8 +135,8 @@ convert.liv.to.aaron <- function(liv.ids) {
 # make.medium.graph(pwners) -> pwners.graph
 # table(components(pwners.graph,mode="weak")$csize)
 
- get.everyone("#AisMona",10) -> moners
- make.medium.graph(moners) -> moners.graph
- table(components(moners.graph,mode="weak")$csize)
+#get.everyone("#AisMona",10) -> moners
+#make.medium.graph(moners) -> moners.graph
+#table(components(moners.graph,mode="weak")$csize)
 
 
