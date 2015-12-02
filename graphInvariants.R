@@ -108,21 +108,23 @@ graph.diameter<- function(graphs, dir=FALSE){
 	return (diam)
 }
 
+#can we have a list of N?
 outside.tweeter <- function(graphs){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	outside <- c()
+	for (i in 1:length(graphs)){
+		#if tweeter t  was not present in any of the graphs 1 to t-1
+#for each tweeter, make induced subgraphs for 1:t-1 and see if tweeter t exists in that graph
+		#get N somehow
+		tweeter <- N$graph$tweeter
+		for ( ){
+			tweeter <- 
+			result <- exists.in.graph(tweeter, graphs[[i]])
+			if (result){
+				outside <- c(outside, 0L)
+			}else{
+				outside <- c(outside, 1L)
+			}
+		}
+	}
+	return (outside)
 }
