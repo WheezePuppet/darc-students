@@ -126,18 +126,11 @@ outside.tweeter <- function(graphs, list.of.N){
 		}
 		#The first tweeter is NA
 		outside <- c(NA)
-        #subgraph == first graph
+        subgraphs <- induced.subgraphs.up.to.all.times.t(curr.graph,N)
 		for (i in 2:length(tweeters.vec)){
-			#if (i>1)
-                 #subgraph <- add.to.graph.thing(subgraph,N$graph[[i]],N$attribute[[i]])
-            subgraph <- induced.subgraph.up.to.time.t(curr.graph,N,i-1)
 			x <- toString(tweeters.vec[[i]])
-			result <- exists.in.graph(x, subgraph)
-			if (result){
-				outside <- c(outside, 0L)
-			}else{
-				outside <- c(outside, 1L)
-			}
+			result <- exists.in.graph(x, subgraphs[[i]])
+            outside <- c(outside, !result)
 		}
 	list.of.vecs <- list(list.of.vecs, outside)
 	}
