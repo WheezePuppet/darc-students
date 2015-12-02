@@ -20,6 +20,41 @@ num.components <- function(graph){
 	return (num)
 }
 
+#Pre- stuff needed for degree sequence
+out.degree.graph<-function(graph){
+  degrees<-vector(length=length(graph))
+  for (i in 1:length(graph)){
+    degrees[i]<-degree(graph[[i]], mode=c("out"), loops = FALSE)
+  }
+  return(degrees)
+}
+
+in.degree.graph<-function(graph){
+  degrees<-vector(length=length(graph))
+  for (i in 1:length(graph)){
+    degrees[i]<-degree(graph[[i]], mode=c("in"), loops = FALSE)
+  }
+  return(degrees)
+}
+
+#Returns a list of degree sequences for a list of graphs
+degree.sequence.graph<-function(graph){
+  sequences<-vector(length=length(graph))
+  for(i in 1:length(graph)){
+    sequences[i]<-degree.sequence.game(out.degree.graph(graph)[i],in.degree.graph(graph)[i])
+  }
+  return (sequences)
+}
+
+#Returns vector of the diameters of a list of graphs
+
+diameter.graph<-function(graph){
+  diameters<-vector(length=length(graph))
+  for(i in 1:length(graph)){
+    diameters[i]<-diameter(graph, directed = TRUE, unconnected = TRUE)
+  }
+  return (diameters)
+}
 
 
 #Returns the clustering coefficient for a list of graphs.
