@@ -153,7 +153,6 @@ combine <- function(first, second) {
 # each entry in the list (named for the user ID) is its own list, with the first element, $user; the second element,
 # $date (which I may need to format differently?); and the third element, $followers, a vector of up to 25k follower IDs
 # it's assumed you're using the correct [auth.name] letter, but all this does is determine which key you use next
-
 get.twitter.users <- get.first.results <- function(search.string, auth.name=auth.name, quantity=100, tweet.dates=c(), users=list(), counter=1, beginning=1) {
   auth.name <- str_to_upper(substring(auth.name,1,1)) # these are our OAuth keys, which this function cycles through
   search.string <- ifelse(grepl("#",search.string),paste0("23",substring(search.string,2)),search.string) # formats query
@@ -163,11 +162,11 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
     first.call <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",(counter-1)*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
     first.info <- first.call$response$list$trackback_date # calls manual API once…
     names(first.info) <- first.call$response$list$trackback_author_nick
-    cat("First and")
+    cat("First and ")
     second.call <- make.manual.twitter.api.call(paste0("otter.topsy.com/search.json?q=%",search.string,"%20-rt&window=a&type=tweet&sort_method=-date&perpage=",quantity,"&offset=",(counter-1)*quantity,"&apikey=09C43A9B270A470B8EB8F2946A9369F3&_=1444843853148/"))
     second.dates <- second.call$response$list$trackback_date # …and twice
     names(second.info) <- second.call$response$list$trackback_author_nick
-    cat(" second calls done\n") # I just stuck the names onto the dates so I wouldn't have to short them twice
+    cat("second calls done\n") # I just stuck the names onto the dates so I wouldn't have to short them twice
     
     all.info <- combine(first.info,second.info) # this collects usernames/dates and merges them every [counter]
     tweet.dates <- c(tweet.dates,unname(all.info)) # and now it take the dates off
@@ -178,7 +177,7 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
       if(length(all.info)==0) {
         return(length(users))
       } else {
-        counter <- (counter + 1) ->> counter
+        counter <- (counter + 1)
         cat(" it isn't long enough!")
         next()
       }
@@ -186,7 +185,7 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
     
     if(beginning > length(users)) {
       cat(" it isn't getting any bigger!")
-      return(users) # ends if the list isn't getting any bigger
+      return(str(users)) # ends if the list isn't getting any bigger
     } else {
       names(users)[beginning:length(users)] <- users[beginning:length(users)] # names all entries in [users] after themselves
       if(length(rem) > 0) {
@@ -200,6 +199,7 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
         cat(i)
         if(i > length(users)) {
             cat(" — I don't know how, but this user vanished\n")
+            tweet.dates <- tweet.dates[-i]
             break() # this actually happens somehow
         }
         if(names(users)[i] != "~" && length(users[[i]]) <= 1) { # only looks at usernames that haven't been marked with "~"
@@ -232,7 +232,7 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
                             now <- as.POSIXct(Sys.time())
                             wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4])) # the maximum waiting interval
                             if((wait-now) <= 15) { # if we have to wait 15 min.…
-                                cat("Switched from",auth.name)
+                                cat(counter" — Switched from",auth.name)
                                 auth.name <- switch(auth.name, "S"="H", "H"="E", "E"="L", "L"="M", "M"="A", "A"="S") # …then it cycles through the other keys
                                 cat(" to",auth.name,"\n") # I nicknamed it "Shelma" this time
                                 auth.switcher(auth.name) # this calls a function with all the OAuth keys
@@ -245,10 +245,7 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
                                     cat(length(unique(names(users[1:i]))),"/",length(unique(names(users))),sep="")
                                     cat(" unique users",ifelse("~"%in%names(users),"including \"~\"\n","\n"))
                                     print(wait-Sys.time())
-                                    while(Sys.time() <= wait) { # …then the system sleeps for 15 sec. intervals
-                                        cat(".")
-                                        Sys.sleep(15)
-                                    } # this while() loop is better at preventing negative wait-times
+                                    loading.bar(wait.until) # …then the system sleeps
                                     cat("\n")
                                 } else {
                                     cat(rate.limit[32,3],"/",rate.limit[32,2],"\n",sep="") # this means that the new OAuth key isn't at the rate limit
@@ -261,9 +258,9 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
                                 Sys.sleep(abs(wait-now)+1) # and we'll just wait it out
                             }
                             cat(i)
-                            users[[i]] <- user.info$getFollowerIDs() # eventually calls twitteR to get follower IDs
+                            follower.ids <- user.info$getFollowerIDs() # eventually calls twitteR to get follower IDs
+                            users[[i]] <- follower.ids
                             cat(" got",length(users[[i]]),"followers\n")
-
                         } # and this next bit clones the follower ID vector onto any subsequent matching user ID entries
                         repeats <- length(grep(names(users)[[i]],users[i:length(users)]))
                         if(repeats > 1) {
@@ -274,7 +271,7 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
                 }
             }
         } else {
-          cat("…")
+          cat("… ") # seperator between un-unique usernames to be skipped
         }
     } # and so ends the for() loop that does most of the work
     print(paste("Try number",counter,"nearly done"))
@@ -292,11 +289,12 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
             tweet.dates <- tweet.dates[-length(tweet.dates)]
         } # just checking
         while(length(unique(users)) > quantity) {
+            print(length(unique(names(users))))
             users <- users[-length(users)] # trims the excess at the end so we only get 100 unique user IDs
             tweet.dates <- tweet.dates[-length(tweet.dates)] # the same for the dates
         }
         tweet.dates <- as.POSIXct(tweet.dates,origin="1970-01-01",tz="GMT") # converts the date to be readable
-        print("Merging the IDs & dates") # I may need to tweak this slightly?
+        print("Merging the IDs & dates") # I may need to tweak that slightly?
         for(n in 1:length(users)){ # final formatting
             users[[n]] <-  list(names(users)[[n]],tweet.dates[n],users[[n]]) # upgrades [users] from list of vectors, to list of lists
             names(users[[n]]) <- c("userID","date","followers") # names these sublists
@@ -310,7 +308,7 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
 # here's where I usually assign a global variable and just return str(users) or unique(names(users)) 'cause it's long
   print(paste0("Finished with ",ifelse(grepl("23",search.string),paste0("#",substring(search.string,3)),search.string),"!"))
   return(users) # this usually takes a bit over 30–45 minutes to complete
-} # and just ignore the rate limit error at the end as it doesn't seem to mean much
+} # and just ignore the rate limit error at the end as it's unavoidable
 
 # this makes get.first.results() almost 6x faster by using all out OAuth keys
 auth.switcher <- function(auth.name) { # it's all global variables here
@@ -367,7 +365,7 @@ check.uniqueness <- function(stuff) {
       if(setequal(stuff[[i]]$followers,stuff[[n]]$followers)) {
         ##print("These have the same followers")
         if(names(stuff[i]) != names(stuff[n])) {
-          print(paste(i,"and",n,"have the same friends"))
+          print(paste(i,"and",n,"don't have the same names"))
         }
       } else if(names(stuff[i]) == names(stuff[n])){
         ##print("These have the same names")
@@ -378,4 +376,54 @@ check.uniqueness <- function(stuff) {
     }
   }
   cat("Finished!")
+  for(x in 1:length(stuff)) {
+    if(length(stuff[[x]]$followers) < 2) {
+      print(x)
+    }
 } # fin
+
+# I got bored of staring at little dots appear on my screen for the Sys.sleep()
+# so I created this loading bar instead, which works almost perfectly
+loading.bar <- function(finish.time, pause=1, total.bars=20) {
+  if(Sys.time() < finish.time) { # checks that we're not running in negative time
+    interval <- 100/total.bars # so the default interval would be every 5%
+    cat(rep("—",total.bars),"  0.00%",sep="") # prints the unloaded bars and 0%
+    wait.time <- abs(finish.time-Sys.time()) # how long we have to wait
+    while(Sys.time() < finish.time) { # main loop
+      if(floor(finish.time-Sys.time())==1) { # this is a little confusing as this part is the second part of the loop
+        while(Sys.time() < finish.time) { # it's for when you have 1 minute left.
+          Sys.sleep(pause/2)
+          percent <- format(round(100-as.numeric(finish.time-Sys.time())*100/as.numeric(wait.time*ifelse(floor(finish.time-Sys.time())==1, 1, 60)),digits=2),width=6)
+          if(as.numeric(percent) >= interval) { # this is the part where another percentage bar loads
+            bars <- floor(as.numeric(percent)*total.bars/100)
+            interval <- (bars+1)*100/total.bars
+            cat("\r",rep("▓",bars-1),"░",sep="") # I did this bit just for kicks and it does nothing beyong creatint an intermediary loading bar
+            Sys.sleep(pause/2) # if your computer can't read the symbol, just use a vertical bar
+            cat("\r",rep("▓",bars),rep("—",total.bars-bars),sep="") # re-prints the unloaded bars so the percent doesn't overwrite them
+          } else { # and this is the part where the percentage bar doesn't load
+            Sys.sleep(pause/2)
+            cat("\b\b\b\b\b\b\b") # erases the previous percent reading
+          }
+          cat(ifelse(percent < 100, percent, " 100"),"%",sep="") # displays the new percent
+        }
+      } else { # and this part is what you'll spend most of your time in
+        Sys.sleep(pause/2)
+        percent <- format(round(100-as.numeric(finish.time-Sys.time())*100/as.numeric(wait.time),digits=2),width=6)
+        if(as.numeric(percent) >= interval) {
+          bars <- floor(as.numeric(percent)*total.bars/100)
+          interval <- (bars+1)*100/total.bars
+          cat("\r",rep("▓",bars-1),"░",sep="") # you get the idea
+          Sys.sleep(pause/2)
+          cat("\r",rep("▓",bars),rep("—",total.bars-bars),sep="")
+        } else {
+          Sys.sleep(pause/2)
+          cat("\b\b\b\b\b\b\b")
+        }
+        cat(ifelse(percent < 100, percent, " 100.0"),"%",sep="") # this 100% is different from the other just so I could see where the function ended
+      }
+    }
+    Sys.sleep(1) # extra pause to compensate for potential rounding issues
+  } else {
+    cat(rep("█",total.bars)," 100%",sep="") # an output for if we're already finished before we webin
+  }
+} # that's all, folks!
