@@ -43,7 +43,10 @@ in.degree.graph<-function(graph){
 degree.sequence.graph<-function(graph){
   sequences<-vector(length=length(graph))
   for(i in 1:length(graph)){
-    sequences[i]<-degree.sequence.game(out.degree.graph(graph)[i],in.degree.graph(graph)[i])
+# Aaron TODO: change this to work with degree.distribution() function.
+#  add a "mode" argument to this function and pass it through to
+#  degree.distribution().
+#    sequences[i]<-degree.distribution(out.degree.graph(graph)[i],in.degree.graph(graph)[i])
   }
   return (sequences)
 }
@@ -120,19 +123,72 @@ outside.tweeter <- function(graphs, list.of.N){
 		curr.graph <- graphs[[i]]
 		N <- list.of.N[[i]]
 		#because we've only asked for up to 10, will change to 100
-		for (i in 1:length(N$graph)){
-			tweeters <- N$graph[[i]]$tweeter
+		for (j in 1:length(N$graph)){
+			tweeters <- N$graph[[j]]$tweeter
 			tweeters.vec <- c(tweeters.vec,tweeters)
 		}
 		#The first tweeter is NA
 		outside <- c(NA)
         subgraphs <- induced.subgraphs.up.to.all.times.t(curr.graph,N)
-		for (i in 2:length(tweeters.vec)){
-			x <- toString(tweeters.vec[[i]])
-			result <- exists.in.graph(x, subgraphs[[i]])
-            outside <- c(outside, !result)
+		for (j in 2:length(tweeters.vec)){
+			x <- toString(tweeters.vec[[j]])
+			result <- exists.in.graph(x, subgraphs[[j]])
+            # Dave is UUUUgly but we still looooove him
+            outside <- c(outside, as.integer(!result))
 		}
-	list.of.vecs <- list(list.of.vecs, outside)
+        list.of.vecs[[i]] <- outside
 	}
 	return (list.of.vecs)
 }
+
+
+# THE MASTER FUNCTION
+# Hannah TODO:
+# Given a search string (like "pwn") return a list of vectors of graph invariants
+# Each element in the list is named:
+#    num.components
+#    diameter
+#    outside.tweeter
+#    --- the weird one is Aaron's degree distribution thing, since that's a
+#        vector for each of the 100.
+#    etc.
+# Hannah and Liv TODO: make this work with memento pattern, which means: 
+#    there's a "cache" directory with a bunch of files, each of which:
+#        the name of the file is the search string and n, concatenated with
+#           underscore.
+#        the contents of the file is a binary RData file with one variable
+#           named f.search.string. This variable is a list of n unnamed 
+#           elements. Each element is a list with three named elements:
+#           user -- a character string of the kth user ID to tweet that string
+#           date -- the date of the kth tweet (POSIXct)
+#           followers -- a vector of character strings representing the user
+#              IDs of the tweeters who follow user k
+# Example:
+#     filename: pwn_10.RData
+#     contents: a binary RData file with a variable called f.pwn_10, which is
+#         a list of 10 elements as described above.
+gather.all.invariants <- function(search.string, n=10) {
+
+    # Check "cache" directory. (Create if it doesn't exist.)
+    # In cache directory, look for file called "search.string_n.RData" 
+    # (e.g., "pwn_10.RData")
+    # If it doesn't exist, call the time-consuming Liv stuff and save a file
+    # by that name with that time-consuming Liv result, named appropriately.
+    # If it does, sweeeeet, load() the file and use it.
+
+    # Think deeply about this line. Wow.
+    get(paste0("f.",search.string,"_",n)) -> everyone
+
+    # And now, we have a plain ol' variable called everyone.
+
+    get.everyone(search.string,n) -> everyone
+    make.medium.graph(the.everyone.for.this.search.string) -> 
+        the.medium.graph.
+
+    # fill in this code to call all the graph invariant functions
+
+    # Return a list with one component for each graph variant. (Each such
+    # component is a list n long.
+}
+
+
