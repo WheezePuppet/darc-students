@@ -107,3 +107,22 @@ graph.diameter<- function(graphs, dir=FALSE){
 	}
 	return (diam)
 }
+
+outside.tweeter <- function(graphs){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
