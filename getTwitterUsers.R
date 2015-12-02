@@ -232,7 +232,7 @@ get.twitter.users <- get.first.results <- function(search.string, auth.name=auth
                             now <- as.POSIXct(Sys.time())
                             wait <- as.POSIXct(max(rate.limit[c(which(rate.limit[,3]==0)),4])) # the maximum waiting interval
                             if((wait-now) <= 15) { # if we have to wait 15 min.…
-                                cat(counter" — Switched from",auth.name)
+                                cat(counter," — Switched from",auth.name)
                                 auth.name <- switch(auth.name, "S"="H", "H"="E", "E"="L", "L"="M", "M"="A", "A"="S") # …then it cycles through the other keys
                                 cat(" to",auth.name,"\n") # I nicknamed it "Shelma" this time
                                 auth.switcher(auth.name) # this calls a function with all the OAuth keys
@@ -380,6 +380,7 @@ check.uniqueness <- function(stuff) {
     if(length(stuff[[x]]$followers) < 2) {
       print(x)
     }
+  }
 } # fin
 
 # I got bored of staring at little dots appear on my screen for the Sys.sleep()
