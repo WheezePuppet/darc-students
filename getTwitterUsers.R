@@ -149,9 +149,14 @@ combine <- function(first, second) {
   return(longer)
 } # I don't think I've put this much brain power into something since I tried to visualize the 4th dimension
 
-# okay, this will return a list, 100-long when unique'd by name, of the first hundred (repeated) user IDs
-# each entry in the list (named for the user ID) is its own list, with the first element, $user; the second element,
-# $date (which I may need to format differently?); and the third element, $followers, a vector of up to 25k follower IDs
+# okay, this will return a list of entries, each of which corresponds to a
+# tweet for the search.string passed. Each entry is its own list, with the
+# first elemtn $user, the second element $date, and the third element,
+# $followers a vector of up to 25k follower IDs. The number of entries in this
+# list is somewhat variable: the function's goal is to return "quantity" of
+# them; however, it may return fewer if there aren't that many tweets in
+# history matching the search string, otherwise it will return the requested
+# quantity or more.
 # it's assumed you're using the correct [auth.name] letter, but all this does is determine which key you use next
 get.twitter.users <- get.first.results <- function(search.string, auth.name=auth.name, quantity=100, tweet.dates=c(), users=list(), counter=1, beginning=1) {
   auth.name <- str_to_upper(substring(auth.name,1,1)) # these are our OAuth keys, which this function cycles through
