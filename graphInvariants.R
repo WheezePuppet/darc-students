@@ -187,6 +187,19 @@ gather.all.invariants <- function(search.string, n=10) {
 
     # fill in this code to call all the graph invariant functions
 
+
+    comp <- num.components(g)
+    #degree <- 
+    diameter <- diameter.graph(g)
+    out.tweeter <- outside.tweeter(g, N)
+    for (i in 1:len(g)){
+	comp[i]
+	#degree[i]
+	diameter[i]
+	out.tweeter[i]
+
+    }
+
     # Return a list with one component for each graph variant. (Each such
     # component is a list n long.
 }
