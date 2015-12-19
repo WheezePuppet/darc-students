@@ -167,27 +167,46 @@ outside.tweeter <- function(graphs, list.of.N){
 #     filename: pwn_10.RData
 #     contents: a binary RData file with a variable called f.pwn_10, which is
 #         a list of 10 elements as described above.
-gather.all.invariants <- function(search.string, n=10) {
 
+#Git pull before running this function....
+gather.all.invariants <- function(search.string, n=10) {
     # Check "cache" directory. (Create if it doesn't exist.)
+	if (!dir.exists("cache")){
+		dir.create("cache")	
+	}
     # In cache directory, look for file called "search.string_n.RData" 
     # (e.g., "pwn_10.RData")
-    # If it doesn't exist, call the time-consuming Liv stuff and save a file
-    # by that name with that time-consuming Liv result, named appropriately.
-    # If it does, sweeeeet, load() the file and use it.
+	search <- paste0("cache/",search.string,"_",n,".RData")
+	my.var.name <- paste0("f.",search.string,"_",n)
+	if (!file.exists(search)){
+    		# If it doesn't exist, call the time-consuming Liv stuff and save a file
+    		# by that name with that time-consuming Liv result, named appropriately.
+		blah <- get.first.results(search.string,n)			
+		assign(my.var.name, blah)
+		save(list=c(my.var.name), file=search)
+	}else{
+		# If it does, sweeeeet, load() the file and use it.
+		load(search)
+	}
 
+    #must [get(my.var.name)] to get liv's thing
     # Think deeply about this line. Wow.
-    get(paste0("f.",search.string,"_",n)) -> everyone
+    #get(paste0("f.",search.string,"_",n)) -> everyone
+    
+    #List of lists of the first 100 tweets of the search 
+    #string with first tweeter, their followers, and the tweet date
+    get(my.var.name) -> tweet.info.list
+    
 
-    # And now, we have a plain ol' variable called everyone.
 
     get.everyone(search.string,n) -> everyone
     make.medium.graph(the.everyone.for.this.search.string) -> 
         the.medium.graph.
 
+
+
     # fill in this code to call all the graph invariant functions
-
-
+    #Started on the code here....
     comp <- num.components(g)
     #degree <- 
     diameter <- diameter.graph(g)
