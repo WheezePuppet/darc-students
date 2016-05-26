@@ -1,27 +1,9 @@
 
 library(igraph)
 
-characters <- read.csv("chars.csv",header=TRUE)
 
-construct.sw.graph <- function(csv.filename, directed=FALSE,
-    multiplicity.column.name=NULL) {
-
-    the.data.frame <- read.csv(csv.filename,header=TRUE)
-    multigraph <- graph.data.frame(the.data.frame, 
-        directed=directed, vertices=characters)
-
-    if (!is.null(multiplicity.column.name)) {
-        E(multigraph)$weight <- the.data.frame[,multiplicity.column.name]
-    } else {
-        E(multigraph)$weight <- 1
-    }
-
-    simplified.graph <- simplify(multigraph)
-    return(simplified.graph)
-}
-
-plot.sw.graph <- function(sw.graph, title, edge.arrow.size=.5, vertex.size=20,
-    edge.lty="solid") {
+plot.sw.graph <- function(sw.graph, title="", edge.arrow.size=.5, 
+    vertex.size=20, edge.lty="solid") {
 
     V(sw.graph)$color <- 
         ifelse(characters$species == "human", "yellow",
@@ -38,18 +20,13 @@ plot.sw.graph <- function(sw.graph, title, edge.arrow.size=.5, vertex.size=20,
         main=title)
 }
 
-
-scenes <- construct.sw.graph("scenesAll.csv",directed=FALSE)
-touches <- construct.sw.graph("touchesAll.csv",directed=FALSE)
-dialog <- construct.sw.graph("dialogAll.csv",
-    multiplicity.column.name="numUtterances",directed=TRUE)
-mentions <- construct.sw.graph("mentionsAll.csv",
-    multiplicity.column.name="numMentions",directed=TRUE)
-
-plot.sw.graph(scenes,"Scenes in common")
-readline("Press ENTER.")
-plot.sw.graph(touches,"Physical contacts")
-readline("Press ENTER.")
-plot.sw.graph(mentions,"Mentions (in dialog)",edge.lty="dashed")
-readline("Press ENTER.")
-plot.sw.graph(dialog,"Direct address (in dialog)")
+main <- function() {
+    source("loadSW.R")
+    plot.sw.graph(scenes,"Scenes in common")
+    readline("Press ENTER.")
+    plot.sw.graph(touches,"Physical contacts")
+    readline("Press ENTER.")
+    plot.sw.graph(mentions,"Mentions (in dialog)",edge.lty="dashed")
+    readline("Press ENTER.")
+    plot.sw.graph(dialog,"Direct address (in dialog)")
+}
