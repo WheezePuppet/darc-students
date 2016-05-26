@@ -1,3 +1,6 @@
+
+library(igraph)
+
 characters <- read.csv("chars.csv",header=TRUE)
 
 construct.sw.graph <- function(csv.filename, directed=FALSE,

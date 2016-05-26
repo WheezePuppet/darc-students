@@ -1,4 +1,6 @@
 
+library(igraph)
+
 source("loadSW.R")
 source("plotSW.R")
 
