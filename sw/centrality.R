@@ -15,7 +15,11 @@ A <- as.matrix(get.adjacency(scenes))
 # vector may be all-negative instead of all-positive.)
 pf.v <- abs(eigen(A)$vectors[,1])
 
-most.central.chars <- 
-    data.frame(char=V(scenes)[order(pf.v,decreasing=TRUE)]$name,
-               pf.val=round(sort(pf.v,decreasing=TRUE),3))
+most.central.chars <- round(sort(pf.v,decreasing=TRUE),3)
+names(most.central.chars) <- V(scenes)[order(pf.v,decreasing=TRUE)]$name
+
+cat("\nStephen says:\n")
 print(most.central.chars)
+
+cat("\nevcent says:\n")
+print(sort(evcent(scenes)$vector,decreasing=TRUE),3)
