@@ -25,7 +25,7 @@ cat("\nStephen says:\n")
 print(most.central.chars)
 
 cat("\nevcent says:\n")
-print(sort(evcent(scenes)$vector,decreasing=TRUE),3)
+print(round(sort(evcent(scenes)$vector,decreasing=TRUE),3))
 
 
 cat("\n\n")
@@ -34,6 +34,7 @@ cat("\n\n")
 # II. Katz centrality.
 
 # Compute the maximum "legal" value of alpha.
+# (Note: if directed graph, this eigenval might be complex, no?)
 max.alpha <- 1/eigen(A)$values[1]
 
 # For no particularly good reason, choose half that value as our alpha.
